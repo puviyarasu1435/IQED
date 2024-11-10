@@ -6,7 +6,7 @@ import SignUpBox from "./SubComponets/SignUpBox";
 import { Logo } from "../../Common";
 
 const AuthContainer = () => {
-  const [isLoginPage, setisLoginPage] = useState(false);
+  const [isLoginPage, setisLoginPage] = useState(true);
 
   const handelPageSwitch = () => {
     setisLoginPage(!isLoginPage);

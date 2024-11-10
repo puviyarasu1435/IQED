@@ -3,9 +3,10 @@ import { Link } from "react-router-dom";
 import { Button, Box, Input, Typography } from "@mui/material";
 import { Formik, Form, FormikProvider } from "formik";
 import { SignInvalidSchema } from "../Schema/AuthSchema";
-import { FormTextField } from "../../../Common";
+import { FormTextField, InputDialogBox } from "../../../Common";
 
 const SignInForm = ({ PageSwitch }) => {
+  const [open, setOpen] = useState(false);
   const handleFormSubmit = (values, { setSubmitting }) => {
     console.log(values);
     alert(JSON.stringify(values, null, 2));
@@ -54,9 +55,8 @@ const SignInForm = ({ PageSwitch }) => {
                   gap={1}
                   mt={1}
                 >
-                  {" "}
                   <Box sx={{fontSize:'12px', display: "flex", justifyContent: "flex-end" }}>
-                    <Link onClick={PageSwitch}>Forgot your password?</Link>
+                    <Link onClick={()=>setOpen(true)} >Forgot your password?</Link>
                   </Box>
                   <Button
                     type="submit"
@@ -68,14 +68,15 @@ const SignInForm = ({ PageSwitch }) => {
                     Submit
                   </Button>
                   <Typography sx={{ textAlign: "center", fontSize: "12px" }}>
-                    I have an account?{" "}
+                    Don't have an account?{" "}
                     <span>
-                      <Link onClick={PageSwitch}>SignIn</Link>
+                      <Link onClick={PageSwitch}>SignUp</Link>
                     </span>
                   </Typography>
                 </Box>
               </Box>
             </Form>
+            <InputDialogBox open={open} close={()=>setOpen(false)} title={"Resert Password"} content={"Enter your account&apos;s email address, and we&apos;ll send you a link to reset your password."} submitCallBack={null} />
           </FormikProvider>
         )}
       </Formik>

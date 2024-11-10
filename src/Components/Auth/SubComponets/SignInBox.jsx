@@ -1,6 +1,4 @@
 import { Box, Button, Typography } from "@mui/material";
-
-import { Logo } from "../../../Common";
 import SignInForm from "../Form/SignInForm";
 
 const SignInBox = ({ PageSwitch }) => {
