@@ -1,8 +1,18 @@
 import { Logout, Person, PersonAdd, Settings } from "@mui/icons-material";
 import { Avatar, Divider, ListItemIcon, Menu, MenuItem } from "@mui/material";
 import React from "react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const MenuBox = ({ open, anchorEl, handleClose }) => {
+    const navigate = useNavigate();
+    const handleLogOut = () => {
+    sessionStorage.clear();
+    navigate("/auth");
+    toast.success("Logout..")
+    handleClose();
+  };
+
   return (
     <Menu
       anchorEl={anchorEl}
@@ -41,7 +51,9 @@ const MenuBox = ({ open, anchorEl, handleClose }) => {
       transformOrigin={{ horizontal: "right", vertical: "top" }}
       anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
     >
-      <MenuItem onClick={handleClose} ><Person sx={{pr:'5px',color:'red'}}/> Account</MenuItem>
+      <MenuItem onClick={handleClose}>
+        <Person sx={{ pr: "5px", color: "red" }} /> Account
+      </MenuItem>
       <Divider />
       <MenuItem onClick={handleClose}>
         <ListItemIcon>
@@ -49,7 +61,7 @@ const MenuBox = ({ open, anchorEl, handleClose }) => {
         </ListItemIcon>
         Settings
       </MenuItem>
-      <MenuItem onClick={handleClose}>
+      <MenuItem onClick={handleLogOut}>
         <ListItemIcon>
           <Logout fontSize="small" />
         </ListItemIcon>

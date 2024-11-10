@@ -1,14 +1,27 @@
 import { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Box, Input, Typography } from "@mui/material";
 import { Formik, Form, FormikProvider } from "formik";
 import { SignUpvalidSchema } from "../Schema/AuthSchema";
 import { FormTextField } from "../../../Common";
+import {
+  useSendEmailOTPMutation,
+  useSignUpMutation,
+  useVerifyEmailOTPMutation,
+} from "../../../Redux/RTK/AuthAPI/AuthAPI";
+import toast from "react-hot-toast";
 
 const steps = ["Profile", "Contact Info", "Password"];
 
-const SignUpForm = ({PageSwitch}) => {
+const SignUpForm = ({ PageSwitch }) => {
+  const [sendEmailOTP, { isLoading: isSendingOTP }] = useSendEmailOTPMutation();
+  const [verifyEmailOTP, { isLoading: isVerifyEmailOTP }] =
+    useVerifyEmailOTPMutation();
+  const [AddUser] = useSignUpMutation();
   const [activeStep, setActiveStep] = useState(0);
+  const [otpSent, setOtpSent] = useState(false);
+  const [isotpError, setisOtpError] = useState(false);
+  const navigate = useNavigate();
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
@@ -16,17 +29,48 @@ const SignUpForm = ({PageSwitch}) => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
+  const handleVerifyEmailOTP = async (values) => {
+    try {
+      const response = await verifyEmailOTP({
+        Email: values.email,
+        OTP: values.OTP,
+      }).unwrap();
+
+      return response;
+    } catch (error) {
+      console.error("Failed to verify OTP:", error);
+    }
+  };
+
   const handleFormSubmit = useCallback(
-    (values, { setSubmitting }) => {
-      console.log(values);
-      console.log("activeStep", activeStep);
-      if (activeStep === steps.length - 1) {
-        alert(JSON.stringify(values, null, 2));
+    async (values, { setSubmitting }) => {
+      if (activeStep === 1) {
+        const isverify = await handleVerifyEmailOTP(values);
+        console.log(isverify);
+        if (isverify) {
+          setisOtpError(false);
+          toast.success("OTP is Verifed");
+          handleNext();
+        } else {
+          setisOtpError(true);
+          toast.error("OTP is wrong");
+        }
       } else {
-        handleNext();
+        if (activeStep === steps.length - 1) {
+          alert(JSON.stringify(values, null, 2));
+          toast.promise(AddUser(values).unwrap(), {
+            loading: "Send...",
+            success: () => {
+              PageSwitch();
+              return <b>New User Added</b>;
+            },
+            error: <b>Could not Add Try again.</b>,
+          });
+        } else {
+          handleNext();
+        }
       }
       setSubmitting(false);
-      return true;
     },
     [activeStep]
   );
@@ -40,7 +84,7 @@ const SignUpForm = ({PageSwitch}) => {
     password: "",
     schoolName: "",
     grade: "",
-    contactNumber: "",
+    OTP: "",
   };
 
   const handleProfileImageChange = (event, setFieldValue) => {
@@ -51,6 +95,26 @@ const SignUpForm = ({PageSwitch}) => {
         setFieldValue("profileImage", reader.result);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const sendOtp = async (Email) => {
+    if (!Email) {
+      alert("Please enter a valid email address first.");
+      return;
+    }
+    console.log(Email);
+    try {
+      toast.promise(sendEmailOTP({ Email }).unwrap(), {
+        loading: "Send...",
+        success: <b>OTP has been sent to your email.</b>,
+        error: <b>Could not Send Try again.</b>,
+      });
+      setOtpSent(true);
+      setisOtpError(false);
+    } catch (error) {
+      console.error(error);
+      setisOtpError(true);
     }
   };
 
@@ -97,16 +161,28 @@ const SignUpForm = ({PageSwitch}) => {
                 {activeStep === 1 && (
                   <>
                     <FormTextField field={"email"} placeholder={"Email"} />
-                    <FormTextField
-                      field={"contactNumber"}
-                      placeholder={"Contact Numb"}
-                    />
+                    <Button
+                      type="button"
+                      variant="contained"
+                      color="primary"
+                      onClick={() => sendOtp(formik.values.email)}
+                    >
+                      {isSendingOTP ? "SENDING..." : "SEND"}
+                    </Button>
+                    {otpSent && (
+                      <FormTextField
+                        field={"OTP"}
+                        placeholder={"OTP"}
+                        error={isotpError || Boolean(formik.errors.OTP)}
+                        helperText={isotpError || formik.errors.OTP}
+                      />
+                    )}
                   </>
                 )}
 
                 {activeStep === 2 && (
                   <>
-                    <Input
+                    {/* <Input
                       type="file"
                       name="profileImage"
                       onChange={(event) =>
@@ -123,7 +199,7 @@ const SignUpForm = ({PageSwitch}) => {
                         <div style={{ color: "red" }}>
                           {formik.errors.profileImage}
                         </div>
-                      )}
+                      )} */}
 
                     <FormTextField
                       field={"password"}
@@ -180,7 +256,7 @@ const SignUpForm = ({PageSwitch}) => {
                   <Typography sx={{ textAlign: "center", fontSize: "12px" }}>
                     I have an account?{" "}
                     <span>
-                      <Link onClick={PageSwitch} >SignIn</Link>
+                      <Link onClick={PageSwitch}>SignIn</Link>
                     </span>
                   </Typography>
                 </Box>

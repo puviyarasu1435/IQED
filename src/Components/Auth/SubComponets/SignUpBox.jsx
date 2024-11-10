@@ -3,6 +3,11 @@ import SignUpForm from "../Form/SignUpForm";
 
 
 const SignUpBox = ({ PageSwitch }) => {
+  
+
+
+
+
   return (
     <Box
       height="100%"

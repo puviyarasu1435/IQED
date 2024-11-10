@@ -17,13 +17,13 @@ export const SignUpvalidSchema = [
       .string()
       .required("OTP is required")
       .matches(/^\d{6}$/, "OTP must be exactly 6 digits"),
-    contactNumber: yup
-      .string()
-      .required("Contact Number is required")
-      .matches(/^\d{10}$/, "Contact Number must be exactly 10 digits"),
+    // contactNumber: yup
+    //   .string()
+    //   .required("Contact Number is required")
+    //   .matches(/^\d{10}$/, "Contact Number must be exactly 10 digits"),
   }),
   yup.object().shape({
-    profileImage: yup.string().required("File is required"),
+    // profileImage: yup.string().required("File is required"),
     password: yup
       .string()
       .required("Password is required")

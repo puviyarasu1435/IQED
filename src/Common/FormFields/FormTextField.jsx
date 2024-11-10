@@ -10,7 +10,7 @@ const FormTextField = ({ field, ...props }) => {
       value={values[field]}
       onChange={handleChange}
       error={touched[field] && Boolean(errors[field])}
-      helperText={touched[field] && errors[field]}
+      helperText={touched[field] && errors[field] }
       inputProps={{
         style: {
           padding: 5,

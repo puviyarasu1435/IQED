@@ -1,11 +1,14 @@
-
-import { useEffect, useState, useMemo } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
-import {DynamicBackground} from '../../Common';
-import { WhiteBackgroundSVG,YellowBackgroundSVG,BlueBackgroundSVG } from '../../assets/SVG';
+import { useEffect, useState, useMemo } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import { DynamicBackground } from "../../Common";
+import {
+  WhiteBackgroundSVG,
+  YellowBackgroundSVG,
+  BlueBackgroundSVG,
+} from "../../assets/SVG";
+import { Toaster } from "react-hot-toast";
 
 const RootLayout = () => {
-
   const location = useLocation();
   const backgroundImage = useMemo(() => {
     const backgroundMap = {
@@ -19,20 +22,19 @@ const RootLayout = () => {
       "/commenquiztest": YellowBackgroundSVG,
       "/guestlobby": YellowBackgroundSVG,
     };
-    console.log(location.pathname.toLowerCase())
+    console.log(location.pathname.toLowerCase());
     return backgroundMap[location.pathname.toLowerCase()] || WhiteBackgroundSVG;
   }, [location.pathname]);
 
   return (
-      <DynamicBackground sx={{backgroundImage: `url(${backgroundImage})`}} className='Root-BackGround'>
-        <Outlet />
-      </DynamicBackground>
+    <DynamicBackground
+      sx={{ backgroundImage: `url(${backgroundImage})` }}
+      className="Root-BackGround"
+    >
+      <Outlet />
+      <Toaster position="top-center" reverseOrder={false} />
+    </DynamicBackground>
   );
 };
 
 export default RootLayout;
-
-
-
-
-

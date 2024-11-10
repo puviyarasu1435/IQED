@@ -1,15 +1,45 @@
 import { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, Box, Input, Typography } from "@mui/material";
 import { Formik, Form, FormikProvider } from "formik";
 import { SignInvalidSchema } from "../Schema/AuthSchema";
 import { FormTextField, InputDialogBox } from "../../../Common";
+import { useSignInMutation } from "../../../Redux/RTK/AuthAPI/AuthAPI";
+import toast from "react-hot-toast";
 
 const SignInForm = ({ PageSwitch }) => {
   const [open, setOpen] = useState(false);
-  const handleFormSubmit = (values, { setSubmitting }) => {
+  const [UserLogin] = useSignInMutation();
+  const navigate = useNavigate();
+
+  const handleFormSubmit = async (values, { setSubmitting }) => {
     console.log(values);
-    alert(JSON.stringify(values, null, 2));
+    try {
+      const response = await toast.promise(
+        UserLogin({ email: values.email, password: values.password }), // Remove .unwrap()
+        {
+          loading: "Logging in...",
+          success: (res) => {
+            if (res.data != null ) {
+              console.log(res.data);
+              sessionStorage.setItem("UserId",res.data._id)
+              navigate("/Explore");
+              return <b>Login successful!</b>;
+            } else {
+              throw new Error("Unexpected response status");
+            }
+          },
+          error: (error) => {
+            console.error("Login error:", error); // Log error for debugging
+            return <b>Could not login. Please try again.</b>;
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error in login process:", error); // Additional error handling
+    }
+
+    setSubmitting(false); // Reset form submitting state
   };
 
   const initialValues = {
@@ -55,8 +85,16 @@ const SignInForm = ({ PageSwitch }) => {
                   gap={1}
                   mt={1}
                 >
-                  <Box sx={{fontSize:'12px', display: "flex", justifyContent: "flex-end" }}>
-                    <Link onClick={()=>setOpen(true)} >Forgot your password?</Link>
+                  <Box
+                    sx={{
+                      fontSize: "12px",
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <Link onClick={() => setOpen(true)}>
+                      Forgot your password?
+                    </Link>
                   </Box>
                   <Button
                     type="submit"
@@ -76,7 +114,15 @@ const SignInForm = ({ PageSwitch }) => {
                 </Box>
               </Box>
             </Form>
-            <InputDialogBox open={open} close={()=>setOpen(false)} title={"Resert Password"} content={"Enter your account&apos;s email address, and we&apos;ll send you a link to reset your password."} submitCallBack={null} />
+            <InputDialogBox
+              open={open}
+              close={() => setOpen(false)}
+              title={"Resert Password"}
+              content={
+                "Enter your account&apos;s email address, and we&apos;ll send you a link to reset your password."
+              }
+              submitCallBack={null}
+            />
           </FormikProvider>
         )}
       </Formik>
