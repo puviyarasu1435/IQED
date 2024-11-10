@@ -25,20 +25,32 @@ const UserLayout = () => {
       <Box>
         <MainNavBar />
       </Box>
-      <Box>
+      <Box
+        sx={{
+          display: "flex",
+          width:  isSm?null:"100%",
+          height: "100%",
+          marginTop:isSm?"50px":null,
+          padding:"0 20px",
+          overflow:'scroll',
+          "::-webkit-scrollbar": {
+            display: "none"
+        }
+        }}
+      >
         <Outlet />
       </Box>
       <Box
         sx={{
-          width: "300px",
-          height: isSm?"none":"100%",
+          width: "500px",
+          height: isSm ? "none" : "100%",
           display: "flex",
-          flexDirection:isSm ? "row" : "column",
+          flexDirection: isSm ? "row" : "column",
         }}
         gap={2}
       >
         <UserCard />
-        {!isSm && <SideBar  />}
+        {!isSm && <SideBar />}
       </Box>
     </Box>
   );

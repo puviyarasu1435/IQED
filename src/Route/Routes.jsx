@@ -6,7 +6,7 @@ import {
 
 import RootLayout from "../Pages/Layout/RootLayout";
 import AuthLayout from "../Pages/Layout/AuthLayout";
-import { LandingPage, AuthPage } from "../pages";
+import { LandingPage, AuthPage, ExplorePage } from "../pages";
 import UserLayout from "../Pages/Layout/UserLayout";
 
 export const Routers = createBrowserRouter(
@@ -16,7 +16,7 @@ export const Routers = createBrowserRouter(
       <Route path="Auth" element={<AuthPage />} />
       <Route element={<AuthLayout />}>
         <Route element={<UserLayout />}>
-          <Route path="explore" element={<>jhkjsdhfj</>} />
+          <Route path="explore" element={<ExplorePage/>} />
         </Route>
       </Route>
     </Route>

@@ -1,23 +1,32 @@
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box, colors, useMediaQuery, useTheme } from "@mui/material";
 import React from "react";
-import { LogoIcon, ProgressCard, SidebarContainer, UserCard } from "../../Common";
-import { IQGemIcon } from "../../assets/Image";
+import {
+  CarouselCard,
+  LogoIcon,
+  ProgressCard,
+  SidebarContainer,
+  UserCard,
+} from "../../Common";
+import { IQCoinIcon, IQGemIcon } from "../../assets/Image";
+import CarouselBox from "../Auth/SubComponets/CarouselBox";
+import Slider from "react-slick";
 
 const SideBar = () => {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+  };
   return (
     <SidebarContainer gap={2}>
-      <ProgressCard
-        icon={IQGemIcon}
-        title="IQ Gems"
-        Count={100}
-      />
-    <ProgressCard
-        icon={IQGemIcon}
-        title="XP+"
-        Count={100}
-      />
+      <ProgressCard icon={IQGemIcon} title="IQ Gems" Count={100} />
+      <ProgressCard icon={IQCoinIcon} title="XP+ Coin" Count={100} />
     </SidebarContainer>
   );
 };

@@ -6,7 +6,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
-import { LogoIcon, StreakBox } from "../General";
+import { GemsBox, LogoIcon, StreakBox } from "../General";
 
 const UserCard = () => {
   const theme = useTheme();
@@ -32,7 +32,7 @@ const UserCard = () => {
       gap={1}
     >
       {isSm && <LogoIcon widthCus={"34px"} />}
-      <StreakBox count={11990} />
+      <GemsBox count={190} />
       <StreakBox count={110} />
       <Box
         sx={{
@@ -60,7 +60,7 @@ const UserCard = () => {
           width={44}
           height={44}
           alt="Remy"
-          src="https://www.perfocal.com/blog/content/images/2021/01/Perfocal_17-11-2019_TYWFAQ_100_standard-3.jpg"
+          src="https://cdn-icons-png.flaticon.com/512/185/185810.png"
         />
       </Box>
     </Box>

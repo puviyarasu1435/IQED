@@ -1,14 +1,14 @@
 import { Box, Typography } from "@mui/material";
 import { BlurContainerSVG } from "../../assets/SVG";
 
-const CarouselCard = ({ children }) => {
+const CarouselCard = ({ children ,heightcus="60vh"}) => {
   return (
     <Box
       sx={{
         backgroundImage: `url(${BlurContainerSVG})`,
         backgroundSize: "cover",
         width: "100%",
-        height: "60vh",
+        height: heightcus,
         borderRadius: "8px",
       }}
     >
