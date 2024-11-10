@@ -1,10 +1,16 @@
-import { Box, Button } from "@mui/material";
-import React from "react";
+import { Box, Button, Typography } from "@mui/material";
 
-const SignInBox = ({PageSwitch}) => {
+import { Logo } from "../../../Common";
+import SignInForm from "../Form/SignInForm";
+
+const SignInBox = ({ PageSwitch }) => {
   return (
-    <Box height="100%" width="100%" m={2}>
-      <Box sx={{ display: "flex" }}></Box>
+    <Box
+      height="100%"
+      width="100%"
+      display={"flex"}
+      flexDirection={"column"}
+    >
       <Box
         width={"100%"}
         height={"100%"}
@@ -14,7 +20,7 @@ const SignInBox = ({PageSwitch}) => {
           justifyContent: "center",
         }}
       >
-        
+        <SignInForm PageSwitch={PageSwitch} />
       </Box>
     </Box>
   );

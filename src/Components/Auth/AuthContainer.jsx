@@ -1,8 +1,9 @@
+import { useState } from "react";
 import { Box, Paper, Stack } from "@mui/material";
-import React, { useState } from "react";
 import CarouselBox from "./SubComponets/CarouselBox";
 import SignInBox from "./SubComponets/SignInBox";
 import SignUpBox from "./SubComponets/SignUpBox";
+import { Logo } from "../../Common";
 
 const AuthContainer = () => {
   const [isLoginPage, setisLoginPage] = useState(false);
@@ -17,22 +18,25 @@ const AuthContainer = () => {
       sx={{
         backgroundColor: "#FFFFFF",
         height: { xs: "80vh", md: "80vh" },
-        width: { xs: "80vw", md: "80vw" },
+        width: { xs: "80vw", md: "70vw" },
         borderRadius: { xs: "8px", md: "16px" },
         p: 2,
+        position:'relative'
       }}
     >
+      <Box sx={{position:'absolute'}}>
+        <Logo  />
+      </Box>
       <Stack
         direction={{ xs: "column", md: "row" }}
         sx={{
           height: "100%",
-          borderRadius: "20px",
           overflow: "hidden",
           backgroundSize: "cover",
-          borderRadius: '8px',
-          display: { xs: 'none', md: 'flex' },
-          alignItems: 'center',
-          justifyContent: 'center',
+          borderRadius: "8px",
+          //display: { xs: "none", md: "flex" },
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         {isLoginPage ? (

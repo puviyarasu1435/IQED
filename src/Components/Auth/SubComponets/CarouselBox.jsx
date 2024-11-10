@@ -1,7 +1,6 @@
-import React from "react";
 import Slider from "react-slick";
 import { Box } from "@mui/material";
-import CarouselCard from "../../../Common/Container/CarouselCard";
+import {CarouselCard} from "../../../Common";
 import { YellowDesignSVG } from "../../../assets/SVG";
 
 const CarouselBox = () => {

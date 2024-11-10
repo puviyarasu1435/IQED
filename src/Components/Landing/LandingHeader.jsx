@@ -1,9 +1,4 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
+import {Button,Container,AppBar, Toolbar, Box} from "@mui/material";
 import { Link } from "react-router-dom";
 import { Logo } from "../../Common";
 
@@ -18,7 +13,7 @@ function LandingHeader() {
           <Box sx={{ flexGrow: 0 }}>
             <Button
               component={Link}
-              to="/Signin"
+              to="/Auth"
               fullWidth
               variant="contained"
               sx={{

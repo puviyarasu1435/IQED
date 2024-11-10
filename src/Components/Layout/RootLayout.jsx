@@ -1,7 +1,7 @@
-import { Box } from '@mui/system';
-import React, { useEffect, useState, useMemo } from 'react';
+
+import { useEffect, useState, useMemo } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import DynamicBackground from '../../Common/Container/DynamicBackground';
+import {DynamicBackground} from '../../Common';
 import { WhiteBackgroundSVG,YellowBackgroundSVG,BlueBackgroundSVG } from '../../assets/SVG';
 
 const RootLayout = () => {
@@ -10,7 +10,7 @@ const RootLayout = () => {
   const backgroundImage = useMemo(() => {
     const backgroundMap = {
       "/": YellowBackgroundSVG,
-      "/signin": BlueBackgroundSVG,
+      "/auth": BlueBackgroundSVG,
       "/signup": BlueBackgroundSVG,
       "/general-quiz-test": YellowBackgroundSVG,
       "/gq-success": YellowBackgroundSVG,
@@ -19,6 +19,7 @@ const RootLayout = () => {
       "/commenquiztest": YellowBackgroundSVG,
       "/guestlobby": YellowBackgroundSVG,
     };
+    console.log(location.pathname.toLowerCase())
     return backgroundMap[location.pathname.toLowerCase()] || WhiteBackgroundSVG;
   }, [location.pathname]);
 
