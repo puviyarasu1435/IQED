@@ -8,8 +8,10 @@ import {
 } from "@mui/material";
 import React, { useState } from "react";
 import { GemsBox, LogoIcon, MenuBox, StreakBox } from "../General";
+import { useSelector } from "react-redux";
 
 const UserCard = () => {
+  const UserData = useSelector((state) => state.UserState);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -42,8 +44,8 @@ const UserCard = () => {
       gap={1}
     >
       {isSm && <LogoIcon widthCus={"34px"} />}
-      <GemsBox count={190} />
-      <StreakBox count={110} />
+      <GemsBox count={UserData.IQGems} />
+      <StreakBox count={UserData.Streak} />
       <Box
         sx={{
           display: "flex",
@@ -63,7 +65,7 @@ const UserCard = () => {
               fontWeight: "700",
             }}
           >
-            Puviayar
+            {UserData.UserName}
           </Typography>
         </Box>
         <IconButton onClick={handleClick}>

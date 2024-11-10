@@ -8,9 +8,11 @@ import {
   UserCard,
 } from "../../Common";
 import { IQCoinIcon, IQGemIcon, IQRankIcon } from "../../assets/Image";
+import { useSelector } from "react-redux";
 ;
 
 const SideBar = () => {
+  const UserData = useSelector((state) => state.UserState);
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
   const settings = {
@@ -24,9 +26,9 @@ const SideBar = () => {
   };
   return (
     <SidebarContainer gap={2}>
-      <ProgressCard icon={IQGemIcon} title="IQ Gems" Count={100} />
-      <ProgressCard icon={IQCoinIcon} title="XP+ Coin" Count={100} />
-      <ProgressCard icon={IQRankIcon} title="Rank" Count={100} />
+      <ProgressCard icon={IQGemIcon} title="IQ Gems" Count={UserData.IQGems} />
+      <ProgressCard icon={IQCoinIcon} title="XP+ Coin" Count={UserData.XP} />
+      <ProgressCard icon={IQRankIcon} title="Rank" Count={UserData.Rank} />
     </SidebarContainer>
   );
 };
