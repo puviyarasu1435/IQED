@@ -1,14 +1,24 @@
 import {
   Avatar,
   Box,
+  IconButton,
   Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React from "react";
-import { GemsBox, LogoIcon, StreakBox } from "../General";
+import React, { useState } from "react";
+import { GemsBox, LogoIcon, MenuBox, StreakBox } from "../General";
 
 const UserCard = () => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.down("md"));
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -44,24 +54,27 @@ const UserCard = () => {
       >
         <Box
           sx={{
-            overflow: "hidden"
+            overflow: "hidden",
           }}
           maxWidth={70}
         >
           <Typography
-          sx={{
-            fontWeight:'700'
-          }}
-          >Puviayar
+            sx={{
+              fontWeight: "700",
+            }}
+          >
+            Puviayar
           </Typography>
         </Box>
-
-        <Avatar
-          width={44}
-          height={44}
-          alt="Remy"
-          src="https://cdn-icons-png.flaticon.com/512/185/185810.png"
-        />
+        <IconButton onClick={handleClick}>
+          <Avatar
+            width={44}
+            height={44}
+            alt="Remy"
+            src="https://cdn-icons-png.flaticon.com/512/185/185810.png"
+          />
+        </IconButton>
+        <MenuBox open={open} anchorEl={anchorEl} handleClose={handleClose} />
       </Box>
     </Box>
   );

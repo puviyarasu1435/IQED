@@ -7,9 +7,8 @@ import {
   SidebarContainer,
   UserCard,
 } from "../../Common";
-import { IQCoinIcon, IQGemIcon } from "../../assets/Image";
-import CarouselBox from "../Auth/SubComponets/CarouselBox";
-import Slider from "react-slick";
+import { IQCoinIcon, IQGemIcon, IQRankIcon } from "../../assets/Image";
+;
 
 const SideBar = () => {
   const theme = useTheme();
@@ -27,6 +26,7 @@ const SideBar = () => {
     <SidebarContainer gap={2}>
       <ProgressCard icon={IQGemIcon} title="IQ Gems" Count={100} />
       <ProgressCard icon={IQCoinIcon} title="XP+ Coin" Count={100} />
+      <ProgressCard icon={IQRankIcon} title="Rank" Count={100} />
     </SidebarContainer>
   );
 };
