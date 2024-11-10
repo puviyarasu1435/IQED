@@ -4,16 +4,21 @@ import {
   Route,
 } from "react-router-dom";
 
-import RootLayout from "../Components/Layout/RootLayout";
+import RootLayout from "../Pages/Layout/RootLayout";
+import AuthLayout from "../Pages/Layout/AuthLayout";
 import { LandingPage, AuthPage } from "../pages";
-import BasicForm from "../Pages/Test/BasicForm";
+import UserLayout from "../Pages/Layout/UserLayout";
 
 export const Routers = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<LandingPage />} />
       <Route path="Auth" element={<AuthPage />} />
-      <Route path="Test" element={<BasicForm />} />
+      <Route element={<AuthLayout />}>
+        <Route element={<UserLayout />}>
+          <Route path="explore" element={<>jhkjsdhfj</>} />
+        </Route>
+      </Route>
     </Route>
   )
 );

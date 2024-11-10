@@ -1,4 +1,6 @@
 import IQEDLogo from "./General/IQED_Logo.png";
+import IQEDIcon from "./General/IQED_Icon.jpg";
+import IQGemIcon from "./Others/Coin.png";
 
 
 
@@ -10,6 +12,4 @@ import IQEDLogo from "./General/IQED_Logo.png";
 
 
 
-
-
-export {IQEDLogo};
+export {IQEDLogo,IQEDIcon,IQGemIcon};
