@@ -1,8 +1,9 @@
 import React from 'react'
+import DandFQuests from '../Quest/DandFQuests'
 
 const QuestContainer = () => {
   return (
-    <div>QuestContainer</div>
+    <DandFQuests/>
   )
 }
 

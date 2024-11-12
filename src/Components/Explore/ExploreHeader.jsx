@@ -1,7 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import React from "react";
+import { useSelector } from "react-redux";
 
 const ExploreHeader = () => {
+  const UserData = useSelector((state) => state.UserState);
   return (
     <Box
       sx={{
@@ -21,7 +23,7 @@ const ExploreHeader = () => {
           color:'#02216F'
         }}
       >
-        Hello! Puviyarsu
+        Hello! {UserData.UserName}
       </Typography>
     </Box>
   );

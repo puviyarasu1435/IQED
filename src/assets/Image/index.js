@@ -3,6 +3,7 @@ import IQEDIcon from "./General/IQED_Icon.jpg";
 import IQGemIcon from "./Others/Gem.png";
 import IQCoinIcon from "./Others/Coin.png";
 import IQRankIcon from "./Others/Rank.png";
+import MathBannerIMG from "./Others/MathBanner.jpg";
 
 
 
@@ -14,4 +15,4 @@ import IQRankIcon from "./Others/Rank.png";
 
 
 
-export {IQEDLogo,IQEDIcon,IQGemIcon,IQCoinIcon,IQRankIcon};
+export {IQEDLogo,IQEDIcon,IQGemIcon,IQCoinIcon,IQRankIcon,MathBannerIMG};

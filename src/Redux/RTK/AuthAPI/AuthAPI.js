@@ -51,6 +51,14 @@ export const AuthApi = createApi({
         body: data,
       }),
     }),
+
+    // New endpoint to get user by ID
+    getUserById: builder.query({
+      query: (userId) => ({
+        url: `user/${userId}`,
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -61,4 +69,5 @@ export const {
   useVerifyEmailOTPMutation,
   useSendMobileOTPMutation,
   useVerifyMobileOTPMutation,
+  useGetUserByIdQuery,  // Export the query hook
 } = AuthApi;

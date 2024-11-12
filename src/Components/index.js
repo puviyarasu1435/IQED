@@ -5,4 +5,5 @@ export { default as MainNavBar } from "./NavBar/MainNavBar.jsx";
 export { default as SideBar } from "./SideBar/SideBar.jsx";
 export { default as ExploreHeader } from "./Explore/ExploreHeader.jsx";
 export { default as QuestContainer } from "./Explore/QuestContainer.jsx";
+export { default as DandFQuests } from "./Quest/DandFQuests.jsx";
 

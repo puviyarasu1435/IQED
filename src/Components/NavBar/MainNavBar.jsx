@@ -22,7 +22,7 @@ const MainNavBar = () => {
     () => [
       { label: "Explore", icon: <ExtensionIcon />, path: "/explore" },
       { label: "Missions", icon: <FlagCircleIcon />, path: "/missions" },
-      { label: "1v1 Duel", icon: <SportsMmaIcon />, path: "/1v1duel" },
+      { label: "Multiplayer", icon: <SportsMmaIcon />, path: "/game" },
       { label: "Leaderboard", icon: <LeaderboardIcon />, path: "/leaderboard" },
       { label: "Profile", icon: <PersonIcon />, path: "/profile" },
       ...(isSm

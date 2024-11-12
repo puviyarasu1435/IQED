@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AuthApi } from "../../RTK/AuthAPI/AuthAPI";
 
-
 const UserSlice = createSlice({
   name: 'UserState',
   initialState: {
@@ -26,6 +25,12 @@ const UserSlice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(
       AuthApi.endpoints.signIn.matchFulfilled,
+      (state, action) => {
+        Object.assign(state, action.payload);
+      }
+    );
+    builder.addMatcher(
+      AuthApi.endpoints.getUserById.matchFulfilled,
       (state, action) => {
         Object.assign(state, action.payload);
       }
