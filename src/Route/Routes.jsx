@@ -12,10 +12,12 @@ import {
   AuthPage,
   ExplorePage,
   MissionPage,
-  MatchPage,
+  GamePage,
   MatchLobby,
 } from "../Pages";
 import UserLayout from "../Pages/Layout/UserLayout";
+import MatchLayout from "../Pages/Layout/MatchLayout";
+import { OnLoadLobby } from "../Pages/GamePage/MatchPage/MatchLobby";
 
 export const Routers = createBrowserRouter(
   createRoutesFromElements(
@@ -26,13 +28,13 @@ export const Routers = createBrowserRouter(
         <Route element={<UserLayout />}>
           <Route path="explore" element={<ExplorePage />} />
           <Route path="missions" element={<MissionPage />} />
-          <Route path="game" element={<MatchPage />}></Route>
+          <Route path="game" element={<GamePage />} />
         </Route>
       </Route>
-      <Route path="match" element={<Outlet />}>
-        <Route index element={<MatchLobby />} />
-        <Route path=":pin" element={<MatchLobby />} />
+      <Route path="match" element={<MatchLayout />}>
+        <Route index element={<MatchLobby />} loader={OnLoadLobby}/>
+        <Route path=":code"  />
       </Route>
     </Route>
   )
-);
+);  

@@ -7,6 +7,7 @@ import {
   BlueBackgroundSVG,
 } from "../../assets/SVG";
 import { Toaster } from "react-hot-toast";
+import { SocketProvider } from "../../Socket/SocketContext";
 
 const RootLayout = () => {
   const location = useLocation();
@@ -20,7 +21,7 @@ const RootLayout = () => {
       "/gq-get-result": YellowBackgroundSVG,
       "/gq-get-result-vai-wa": YellowBackgroundSVG,
       "/commenquiztest": YellowBackgroundSVG,
-      "/guestlobby": YellowBackgroundSVG,
+      "/match": YellowBackgroundSVG,
     };
     console.log(location.pathname.toLowerCase());
     return backgroundMap[location.pathname.toLowerCase()] || WhiteBackgroundSVG;
@@ -31,7 +32,9 @@ const RootLayout = () => {
       sx={{ backgroundImage: `url(${backgroundImage})` }}
       className="Root-BackGround"
     >
-      <Outlet />
+      <SocketProvider>
+        <Outlet />
+      </SocketProvider>
       <Toaster position="top-center" reverseOrder={false} />
     </DynamicBackground>
   );

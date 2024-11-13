@@ -21,13 +21,15 @@ import CardActionArea from "@mui/material/CardActionArea";
 
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { MathBannerIMG } from "../../assets/Image";
+import { useSocket } from "../../Socket/SocketContext";
 
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Grow ref={ref} {...props} />;
 });
 
-const MatchPage = () => {
+const GamePage = () => {
+  const socket = useSocket()
   const navigate = useNavigate(); // Initialize useNavigate
   const [open, setOpen] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null);
@@ -70,15 +72,15 @@ const MatchPage = () => {
 
   const handleChallengeFriend = () => {
     if (selectedCard) {
-      navigate('/match/123', {
-        state: { 
-          topic: selectedCard.title,
-          questions: selectedCard.questions
-        },
+      socket.emit('createRoom', sessionStorage.getItem("UserId"), (response) => {
+        console.log(response); 
+        sessionStorage.setItem("MatchData", JSON.stringify(response));
+        navigate('/match');
       });
     }
     handleClose();
   };
+  
 
   return (
     <Box
@@ -281,4 +283,4 @@ const MatchPage = () => {
   );
 };
 
-export default MatchPage;
+export default GamePage;

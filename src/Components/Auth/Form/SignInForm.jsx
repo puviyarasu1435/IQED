@@ -23,6 +23,7 @@ const SignInForm = ({ PageSwitch }) => {
             if (res.data != null ) {
               console.log(res.data);
               sessionStorage.setItem("UserId",res.data._id)
+              sessionStorage.setItem("UserName",res.data.UserName);
               navigate("/Explore");
               return <b>Login successful!</b>;
             } else {
