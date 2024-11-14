@@ -4,4 +4,5 @@ import BlueBackgroundSVG from "./Background/BlueLineBG.svg";
 import BlurContainerSVG from "./Others/BlurContainer.svg"
 import YellowDesignSVG from "./Others/YellowDesign.svg"
 import FireIconSVG from "./Icons/FireIcon.svg"
-export {WhiteBackgroundSVG,YellowBackgroundSVG,BlueBackgroundSVG,BlurContainerSVG,YellowDesignSVG,FireIconSVG};
+import popGIF from "./Gif/pop.gif"
+export {WhiteBackgroundSVG,YellowBackgroundSVG,BlueBackgroundSVG,BlurContainerSVG,YellowDesignSVG,FireIconSVG,popGIF};

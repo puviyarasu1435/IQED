@@ -3,7 +3,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { KeyboardDoubleArrowRight } from "@mui/icons-material";
 import { Timer } from "../../Common";
 import { useDispatch, useSelector } from "react-redux";
-import { answerQuestion, nextQuestion, prevQuestion, setQuestions } from "../../Redux/Slice/QuizSlice/QuizSlice";
+import { answerQuestion, nextQuestion, prevQuestion, setQuestions, submitQuiz } from "../../Redux/Slice/QuizSlice/QuizSlice";
 import { useGetQuestionsByCategoryQuery } from "../../Redux/RTK/QuizAPI/QuizAPI";
 import { QuestionBox, QuestionDrawerList, QuizProgressBar } from "../../Components";
 
@@ -26,6 +26,11 @@ const QuizPage = () => {
     dispatch(nextQuestion());
     console.log(QuizState);
   };
+  const handleSubmit = () => {
+    dispatch(submitQuiz());
+    alert(QuizState.score)
+  };
+
 
   if (isLoading) return <p>Loading questions...</p>;
 
@@ -45,6 +50,7 @@ const QuizPage = () => {
         open={Open}
         handleClose={() => setOpen(false)}
         quizData={QuizState?.questionsList}
+        handleSubmit={handleSubmit}
       />
       <Button
         sx={{

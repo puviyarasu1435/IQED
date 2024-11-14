@@ -2,7 +2,7 @@ import { Box, styled, Typography } from "@mui/material";
 import React from "react";
 import { RabbitIMG } from "../../assets/Image";
 import { useDispatch, useSelector } from "react-redux";
-import { answerQuestion } from "../../Redux/Slice/QuizSlice/QuizSlice";
+import { answerQuestion, nextQuestion } from "../../Redux/Slice/QuizSlice/QuizSlice";
 
 const OptionButton = ({
   quiz,
@@ -35,7 +35,10 @@ const OptionButton = ({
           color:'#02216F'
         },
       }}
-      onClick={()=>dispatch(answerQuestion({questionId:quiz._id, answer:content}))}
+      onClick={()=>{
+        dispatch(nextQuestion());
+        dispatch(answerQuestion({questionId:quiz._id, answer:content}));
+      }}
     >
       {type == "text" ? (
         <Typography fontWeight={700} fontSize={20}>{content}</Typography>
