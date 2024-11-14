@@ -5,6 +5,8 @@ const UserSlice = createSlice({
   name: 'UserState',
   initialState: {
     _id: null,
+    profileImage:"",
+    UserName:"",
     Name: "",
     Email: "",
     Age: "",

@@ -26,7 +26,7 @@ const LoadingScreen = () => {
       alignItems="center"
       justifyContent="center"
       width="100%"  
-      height="100vh" 
+      height="100%" 
     >
       <Box ref={textRef} display="flex" gap={1}>
         {['I', 'Q', 'E', 'D'].map((letter, index) => (

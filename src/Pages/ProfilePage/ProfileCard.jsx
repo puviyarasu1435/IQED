@@ -12,7 +12,8 @@ import { useTheme, useMediaQuery } from "@mui/material";
 
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useSelector } from "react-redux";
-import { IQCoinIcon,IQGemIcon,FireIconSVG,IQRankIcon} from "../../assets";
+import { IQCoinIcon,FireIconSVG,IQRankIcon} from "../../assets";
+
 const StatBox = ({ icon, value, label }) => (
   <Box
     sx={{

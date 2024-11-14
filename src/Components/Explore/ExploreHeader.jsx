@@ -24,7 +24,7 @@ const ExploreHeader = () => {
         }}
       >
         Hello! {UserData.UserName}
-      </Typography>
+      </Typography> 
     </Box>
   );
 };

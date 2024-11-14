@@ -7,7 +7,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-import { Coin } from "../assets";
+
 
 const RewardCard = ({ title, leftText, coinValue }) => {
   const theme = useTheme();

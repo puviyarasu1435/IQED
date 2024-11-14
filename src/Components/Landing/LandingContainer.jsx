@@ -90,7 +90,7 @@ const LandingContainer = () => {
         <Box sx={{ display: "flex", justifyContent: "right", width: "100%" }}>
           <Button
             component={Link}
-            to="/general-quiz-test"
+            to="/quiz/ewe"
             variant="contained"
             sx={{
               fontWeight: "bold",
