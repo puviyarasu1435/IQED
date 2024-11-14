@@ -31,11 +31,14 @@ const UserLayout = () => {
           width: isSm ? null : "100%",
           height: "100%",
           marginTop: isSm ? "50px" : null,
+          mb: isSm ? "30px" : null,
           padding: "0 20px",
           overflow: "scroll",
           "::-webkit-scrollbar": {
             display: "none",
           },
+         
+              
         }}
       >
         <Outlet />

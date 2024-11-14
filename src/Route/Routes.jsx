@@ -15,6 +15,9 @@ import {
   GamePage,
   MatchLobby,
   QuizPage,
+  ProfilePage,
+  LeaderboardPage,
+  FeedBackPage,
 } from "../Pages";
 import UserLayout from "../Pages/Layout/UserLayout";
 import MatchLayout from "../Pages/Layout/MatchLayout";
@@ -32,6 +35,9 @@ export const Routers = createBrowserRouter(
           <Route path="explore" element={<ExplorePage />} />
           <Route path="missions" element={<MissionPage />} />
           <Route path="game" element={<GamePage />} />
+          <Route path="Profile" element={<ProfilePage />} />
+          <Route path="Leaderboard" element={<LeaderboardPage />} />
+          <Route path="FeedBack" element={<FeedBackPage />} />
         </Route>
         <Route path="quiz" element={<Outlet />}>
           <Route path=":id" element={<QuizLayout />}>
