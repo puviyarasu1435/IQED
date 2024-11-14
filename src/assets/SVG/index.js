@@ -13,6 +13,7 @@ import VS from "./Others/VS.svg";
 import AI_Icon from "./Icons/AI_Icon.png";
 import feedback from "./Icons/feedback.png";
 import SVGLoader from "./Others/SVGLoader.jsx";
+import VSIcon from "./Icons/VSIcon.png";
 
 export {
   WhiteBackgroundSVG,
@@ -30,4 +31,5 @@ export {
   feedback,
   SVGLoader,
   VS,
+  VSIcon
 };

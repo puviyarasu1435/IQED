@@ -8,10 +8,9 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
-import { MainNavBar, SidebarContent } from "../../../../../IQED_FV2/src/commonComponents";
-import { trophy, Vs } from "../../../../../IQED_FV2/src/assets";
 import {GameTopicArea} from "../../Components";
 import PeopleIcon from "@mui/icons-material/People";
+import { VSIcon } from "../../assets";
 const Contest = [
   {
     Title: "Mixed Questions",
@@ -21,7 +20,7 @@ const Contest = [
       "The questions are of varying difficulty.",
       "All questions are worth the same points.",
     ],
-    image: Vs,
+    image: VSIcon,
   },
   {
     Title: "Mixed Questions",
@@ -31,7 +30,7 @@ const Contest = [
       "The questions are of varying difficulty.",
       "All questions are worth the same points.",
     ],
-    image: Vs,
+    image: VSIcon,
   },
 ];
 
