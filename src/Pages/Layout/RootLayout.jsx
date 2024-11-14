@@ -31,6 +31,7 @@ const RootLayout = () => {
     <DynamicBackground
       sx={{ backgroundImage: `url(${backgroundImage})` }}
       className="Root-BackGround"
+      
     >
       <SocketProvider>
         <Outlet />

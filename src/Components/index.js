@@ -7,4 +7,7 @@ export { default as ExploreHeader } from "./Explore/ExploreHeader.jsx";
 export { default as QuestContainer } from "./Explore/QuestContainer.jsx";
 export { default as DandFQuests } from "./Quest/DandFQuests.jsx";
 export { default as LobbyContainer } from "./Game/Lobby/LobbyContainer.jsx";
+export { default as QuestionBox } from "./Quiz/QuestionBox.jsx";
+export { default as QuizProgressBar } from "./Quiz/QuizProgressBar.jsx";
+export { default as QuestionDrawerList } from "./Quiz/QuestionDrawerList .jsx";
 

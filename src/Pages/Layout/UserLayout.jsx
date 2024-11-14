@@ -12,7 +12,7 @@ const UserLayout = () => {
   return (
     <Box
       sx={{
-        height: isSm ? "calc(90% - 60px)" : "100%",
+        height:'100%',
         width: "100%",
         display: "flex",
         flexDirection: isSm ? "column-reverse" : "row",
@@ -28,14 +28,14 @@ const UserLayout = () => {
       <Box
         sx={{
           display: "flex",
-          width:  isSm?null:"100%",
+          width: isSm ? null : "100%",
           height: "100%",
-          marginTop:isSm?"50px":null,
-          padding:"0 20px",
-          overflow:'scroll',
+          marginTop: isSm ? "50px" : null,
+          padding: "0 20px",
+          overflow: "scroll",
           "::-webkit-scrollbar": {
-            display: "none"
-        }
+            display: "none",
+          },
         }}
       >
         <Outlet />

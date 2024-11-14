@@ -5,7 +5,7 @@ const DynamicBackground = styled(Box)({
     backgroundSize: "cover",
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
-    height: '100vh',
+    height:"100vh"
 });
 
 export default DynamicBackground;
