@@ -1,285 +1,164 @@
-import React, { useState } from "react";
+// ExplorePage.js
 import {
   Box,
-  Card,
-  Typography,
-  Grid,
-  Dialog,
-  DialogContent,
-  DialogTitle,
   Button,
-  Slide,
-  Grow,
-  Divider,
+  Grid,
+  Typography,
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import React from "react";
+import { MainNavBar, SidebarContent } from "../../../../../IQED_FV2/src/commonComponents";
+import { trophy, Vs } from "../../../../../IQED_FV2/src/assets";
+import {GameTopicArea} from "../../Components";
 import PeopleIcon from "@mui/icons-material/People";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import CardActionArea from "@mui/material/CardActionArea";
-
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import { MathBannerIMG } from "../../assets/Image";
-import { useSocket } from "../../Socket/SocketContext";
-
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Grow ref={ref} {...props} />;
-});
+const Contest = [
+  {
+    Title: "Mixed Questions",
+    listItems: [
+      "There are 30 multiple choice questions.",
+      "Approximate test time: Fifteen minutes.",
+      "The questions are of varying difficulty.",
+      "All questions are worth the same points.",
+    ],
+    image: Vs,
+  },
+  {
+    Title: "Mixed Questions",
+    listItems: [
+      "There are 30 multiple choice questions.",
+      "Approximate test time: Fifteen minutes.",
+      "The questions are of varying difficulty.",
+      "All questions are worth the same points.",
+    ],
+    image: Vs,
+  },
+];
 
 const GamePage = () => {
-  const socket = useSocket()
-  const navigate = useNavigate(); // Initialize useNavigate
-  const [open, setOpen] = useState(false);
-  const [selectedCard, setSelectedCard] = useState(null);
-  const [searchInput, setSearchInput] = useState("");
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
-  const cardData = [
-    { id: 1, title: "Types of Numbers", image: MathBannerIMG, questions: 10 },
-    { id: 2, title: "Prime Numbers", image: MathBannerIMG, questions: 15 },
-    { id: 3, title: "Tally System", image: MathBannerIMG, questions: 8 },
-    { id: 4, title: "Co-prime", image: MathBannerIMG, questions: 5 },
-    { id: 5, title: "Fractions", image: MathBannerIMG, questions: 12 },
-    { id: 6, title: "Decimals", image: MathBannerIMG, questions: 7 },
-    { id: 7, title: "Percentages", image: MathBannerIMG, questions: 9 },
-    { id: 8, title: "Ratios", image: MathBannerIMG, questions: 11 },
-    { id: 9, title: "Integers", image: MathBannerIMG, questions: 6 },
-    { id: 10, title: "Exponents", image: MathBannerIMG, questions: 14 },
-    { id: 11, title: "Square Roots", image: MathBannerIMG, questions: 13 },
-  ];
-
-  const handleCardClick = (card) => {
-    setSelectedCard(card);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setTimeout(() => {
-      setSelectedCard(null);
-    }, 300);
-  };
-
-  const handleSearchInputChange = (event) => {
-    setSearchInput(event.target.value);
-  };
-
-  const filteredCards = cardData.filter((card) =>
-    card.title.toLowerCase().includes(searchInput.toLowerCase())
-  );
-
-  const handleChallengeFriend = () => {
-    if (selectedCard) {
-      socket.emit('createRoom', sessionStorage.getItem("UserId"), (response) => {
-        console.log(response); 
-        sessionStorage.setItem("MatchData", JSON.stringify(response));
-        navigate('/match');
-      });
-    }
-    handleClose();
-  };
-  
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        flexGrow: 1,
-        gap: "20px",
-        overflowY: "auto",
-        "&::-webkit-scrollbar": {
-          display: "none",
-        },
-        scrollbarWidth: "none",
-        padding: "10px",
-      }}
-    >
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }}
-      >
-        <Typography
-          sx={{
-            fontWeight: "bold",
-            color: "Black",
-            display: "flex",
-            gap: "10px",
-            alignItems: "center",
-            boxSizing: "border-box",
-            px: "10px",
-            py: "5px",
-            borderRadius: "5px",
-            fontSize: isSm?"14px":"18px",
-          }}
-        >
-          Battle Topics
-        </Typography>
+ 
         <Box
           sx={{
+            flexGrow: 1,
             display: "flex",
-            alignItems: "center",
-            backgroundColor: "#fff",
-            borderRadius: "25px",
-            padding: "5px 10px",
-            border: "2px solid",
-            borderColor: "#02216F",
-          }}
-        >
-          <input
-            placeholder="Search Topics"
-            value={searchInput}
-            onChange={handleSearchInputChange}
-            style={{
-              flex: 1,
-              border: "none",
-              outline: "none",
-              fontSize: isSm?"10px":"14px",
-              color: "black",
-            }}
-          />
-        </Box>
-      </Box>
-
-      <Grid container spacing={2}>
-        {filteredCards.map((card) => (
-          <Grid item xs={6} sm={4} md={3} key={card.id}>
-            <Card
-              sx={{
-                bgcolor: "#EEF7FF",
-                "&:hover": {
-                  transition: "transform 0.3s ease-in-out",
-                  transform: "translateY(-5px)",
-                  boxShadow: "2px 3px #02216F",
-                },
-              }}
-              onClick={() => handleCardClick(card)}
-            >
-              <CardActionArea>
-                <CardMedia
-                  component="img"
-                  height="150"
-                  image={card.image}
-                  alt={card.title}
-                />
-                <CardContent>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      textAlign: "center",
-                    }}
-                  >
-                    <Typography
-                      gutterBottom
-                      variant="body"
-                      component="div"
-                      sx={{
-                        fontWeight: "bold",
-                        textOverflow: "ellipsis",
-                        whiteSpace: "normal",
-                        overflow: "hidden",
-                      }}
-                    >
-                      {card.title}
-                    </Typography>
-                  </Box>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
-        sx={{
-          borderRadius: "10px ",
-        }}
-      >
-        <DialogContent
-          sx={{
+            flexDirection: "column",
             boxSizing: "border-box",
-            p: "10px",
+            gap: "20px",
+            overflow: "hidden",
+            marginTop:'10px',
           }}
         >
-          <CardActionArea>
-            <CardMedia
-              component="img"
-              height="180"
-              image={selectedCard?.image}
-              alt={selectedCard?.title}
+        
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: isSm ? "column" : "row",
+              flexGrow: 0,
+              gap: isSm ? "10px" : "20px",
+              bgcolor: "#1A49BA",
+              boxSizing: "border-box",
+              p: "20px",
+              borderRadius: "10px",
+            }}
+          >
+            <Box
               sx={{
-                borderRadius: "6px",
+                display: "flex",
+                flexDirection: "column",
+                flexGrow: 0,
+                gap: isSm ? "10px" : "20px",
               }}
-            />
-            <CardContent
+            >
+              <Typography
+                variant={isSm ? "h6" : "h4"}
+                sx={{
+                  color: "White",
+                  textTransform: "uppercase",
+                  fontWeight: "bold",
+                }}
+              >
+                Welcome to the 1 vs 1 Duel Arena!
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: isSm?"10px":"12px",
+                  color: "White",
+                  fontWeight: 400,
+                }}
+              >
+                Step into the arena and challenge your friends in a thrilling
+                one-on-one quiz battle! {isSm ? null : <br />}
+                Test your knowledge with AI-crafted questions, outsmart your
+                opponent, and claim the crown as the ultimate quiz champion.
+                It's time to see who really has what it takes!
+              </Typography>
+            </Box>
+            <Box
               sx={{
-                boxSizing: "border-box",
-                pl: 0,
-                pr: 0,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent:'center',
+                flexGrow: 1,
+               
+                bgcolor: "white",
+                p: "10px",
+                borderRadius: "10px",
+                gap:'10px',
+                boxSizing:'border-box',
+                m:'10px'
               }}
             >
               <Box
                 sx={{
                   display: "flex",
-                  flexDirection: "column",
-                  gap: "10px",
+                  alignItems: "center",
+                  backgroundColor: "#fff",
+                  borderRadius: "5px",
+                  padding: "5px 10px",
+                  border: "2px solid",
+                  borderColor: "#02216F",
                 }}
               >
-                <Box>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="div"
-                    sx={{ fontWeight: "bold" }}
-                  >
-                    {selectedCard?.title}
-                  </Typography>
-
-                  <Typography gutterBottom variant="body" component="div">
-                    Total Questions: {selectedCard?.questions}
-                  </Typography>
-                  <Divider
-                    sx={{
-                      borderBottomWidth: 3,
-                      borderRadius: "10px",
-                      borderColor: "black",
-                    }}
-                  />
-                </Box>
-                <Button
-                  type="submit"
-                  fullWidth
-                  startIcon={<PeopleIcon />}
-                  variant="contained"
-                  onClick={handleChallengeFriend} // Call the function here
-                  sx={{
-                    fontWeight: "bold",
-                    backgroundColor: "#1A49BA",
-                    color: "#ffffff",
-                    "&:hover": {
-                      backgroundColor: "Black",
-                    },
-                    boxShadow: "2px 3px #FFDA55",
+                <input
+                  placeholder="Enter a join code"
+                  value={''}
+                  onChange={""}
+                  style={{
+                    flex: 1,
+                    border: "none",
+                    outline: "none",
+                    fontSize: "14px",
+                    color: "black",
                   }}
-                >
-                  Challenge Friend
-                </Button>
+                />
               </Box>
-            </CardContent>
-          </CardActionArea>
-        </DialogContent>
-      </Dialog>
-    </Box>
+              <Button
+                type="submit"
+                fullWidth
+                // startIcon={<PeopleIcon />}
+                variant="contained"
+                sx={{
+                  fontWeight: "bold",
+                  backgroundColor: "#1A49BA",
+                  color: "#ffffff",
+                  "&:hover": {
+                    backgroundColor: "Black",
+                  },
+                  boxShadow: "2px 3px #FFDA55",
+                }}
+              >
+                Join
+              </Button>
+            </Box>
+          </Box>
+
+          <GameTopicArea contestData={Contest} />
+        </Box>
+     
   );
 };
 

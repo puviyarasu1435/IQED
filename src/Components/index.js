@@ -10,4 +10,6 @@ export { default as LobbyContainer } from "./Game/Lobby/LobbyContainer.jsx";
 export { default as QuestionBox } from "./Quiz/QuestionBox.jsx";
 export { default as QuizProgressBar } from "./Quiz/QuizProgressBar.jsx";
 export { default as QuestionDrawerList } from "./Quiz/QuestionDrawerList .jsx";
+export { default as LoadingScreen } from "./Loading/LoadingScreen.jsx";
+export {default as GameTopicArea} from "./Game/GameTopicArea.jsx";
 

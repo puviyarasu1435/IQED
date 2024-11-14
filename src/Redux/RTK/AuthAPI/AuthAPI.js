@@ -59,6 +59,12 @@ export const AuthApi = createApi({
         method: 'GET',
       }),
     }),
+    getUsersSortedByMaxStreakAndMinRank: builder.query({
+      query: () => ({
+        url: 'sorted',  // The endpoint where sorted users are fetched from
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -69,5 +75,6 @@ export const {
   useVerifyEmailOTPMutation,
   useSendMobileOTPMutation,
   useVerifyMobileOTPMutation,
-  useGetUserByIdQuery,  // Export the query hook
+  useGetUserByIdQuery, 
+  useGetUsersSortedByMaxStreakAndMinRankQuery ,
 } = AuthApi;
