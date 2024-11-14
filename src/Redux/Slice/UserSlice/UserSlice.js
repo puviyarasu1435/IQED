@@ -4,7 +4,7 @@ import { AuthApi } from "../../RTK/AuthAPI/AuthAPI";
 const UserSlice = createSlice({
   name: 'UserState',
   initialState: {
-    _id: "",
+    _id: null,
     Name: "",
     Email: "",
     Age: "",

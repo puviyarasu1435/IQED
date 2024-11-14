@@ -50,14 +50,13 @@ const QuizPage = () => {
         sx={{
           position: "fixed",
           left: "-2px",
-          top: "40%",
+          top:{lg:"40%",md:'35%',xs:"5%"},
           height: "50px",
           backgroundColor: "#ffffff30",
           color: "white",
         }}
         onClick={() => {
           setOpen(true);
-          console.log(QuizState);
         }}
       >
         <KeyboardDoubleArrowRight />

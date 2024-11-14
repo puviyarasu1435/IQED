@@ -22,9 +22,11 @@ const QuizProgressBar = ({
           alignItems: "center",
         }}
       >
-        <Typography fontWeight={600} fontSize={14}>
-          Q{currentQuestion}/{totalQuestions}
-        </Typography>
+        <Box width={20}>
+          <Typography fontWeight={600} fontSize={14}>
+            Q{currentQuestion}/{totalQuestions}
+          </Typography>
+        </Box>
 
         <Box sx={{ display: "flex", gap: 2 }}>
           <IconButton
@@ -43,9 +45,11 @@ const QuizProgressBar = ({
           </IconButton>
         </Box>
 
-        <Typography fontWeight={700} fontSize={20}>
-          {`${progressValue}%`}
-        </Typography>
+        <Box width={50}>
+          <Typography fontWeight={700} fontSize={20}>
+            {`${progressValue}%`}
+          </Typography>
+        </Box>
       </Box>
 
       <LinearProgress

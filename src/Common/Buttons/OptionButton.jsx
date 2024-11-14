@@ -19,10 +19,10 @@ const OptionButton = ({
         height: { xs: "5rem", lg: "8rem", md: "7rem" },
         width: "100%",
         display: "flex",
-        fontWeight: "bold",
+       
         backgroundColor: QuizState?.answeredQuestions[quiz._id] == content ? "#FFDA55" : "#02216F",
         boxShadow:QuizState?.answeredQuestions[quiz._id] == content ? "2px 3px #0b276b":null,
-        color: "#ffffff",
+        color:  QuizState?.answeredQuestions[quiz._id] == content ? "#02216F" : "#ffffff",
         borderRadius: "10px",
         justifyContent: "center",
         alignItems: "center",
@@ -32,12 +32,13 @@ const OptionButton = ({
           transform: "translateY(-1px)",
           backgroundColor: "#FFDA55",
           boxShadow: "2px 3px #0b276b",
+          color:'#02216F'
         },
       }}
       onClick={()=>dispatch(answerQuestion({questionId:quiz._id, answer:content}))}
     >
       {type == "text" ? (
-        <Typography>{content}</Typography>
+        <Typography fontWeight={700} fontSize={20}>{content}</Typography>
       ) : (
         <img src={content} width={100} height={100} alt="Option" />
       )}
