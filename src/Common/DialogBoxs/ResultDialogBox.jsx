@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 
-import { RewardCard } from "../../commonComponents";
+import { RewardCard } from "../../Common/Cards/RewardCard";
 import { useNavigate } from "react-router-dom";
 import { popGIF } from "../../assets/SVG";
 

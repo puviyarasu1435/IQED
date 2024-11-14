@@ -33,6 +33,9 @@ const QuizPage = () => {
 
 
   if (isLoading) return <p>Loading questions...</p>;
+  if(isError) return(()=>{
+    navigator("/")
+  })
 
   // Dynamically calculate progress value
   const progressValue = ((QuizState?.currentQuestionIndex + 1) / QuizState?.questionsList.length) * 100;
