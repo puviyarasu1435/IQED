@@ -17,31 +17,48 @@ import {
 
 import gsap from "gsap";
 import { SVGLoader, VS } from "../../../assets";
+import { useSelector } from "react-redux";
 const MatchLobby = () => {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
   const [guest, setGuest] = useState(true);
+  const [islogin, setIsLogin] = useState(false);
   const [joinCode, setJoinCode] = useState("");
   const [name, setName] = useState("");
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const correctCode = "12345"; 
+  const correctCode = "12345";
   const stepRef = useRef(null);
   const joinCodeRef = useRef(null);
   const nameInputRef = useRef(null);
   const buttonRef = useRef(null);
+  const UserData = useSelector((state) => state.UserState);
+  const [Profile, setProfile] = useState("");
+  useEffect(() => {
+    const UserId = sessionStorage.getItem("UserId");
+    if (UserData?.Name) {
+      setGuest(false);
+      setIsLogin(true);
+      if (UserData.profileImage && UserData.profileImage.base64) {
+        setProfile(UserData.profileImage.base64); // Ensure it's a valid string
+      } else {
+        setProfile(""); // Fallback for missing image
+      }
+    } else {
+      setGuest(true);
+      setIsLogin(false);
+      setProfile(""); // Clear profile if not logged in
+    }
+  }, [UserData]);
 
   useEffect(() => {
     if (joinCodeRef.current && nameInputRef.current && buttonRef.current) {
-     
       gsap.fromTo(
         [joinCodeRef.current, nameInputRef.current, buttonRef.current],
         { opacity: 0, x: -100 },
         { opacity: 1, x: 0, duration: 1, ease: "power3.out", stagger: 0.2 }
       );
-
-    
       gsap.fromTo(
         buttonRef.current,
         { rotation: -10 },
@@ -49,7 +66,6 @@ const MatchLobby = () => {
       );
     }
 
-   
     if (stepRef.current) {
       gsap.fromTo(
         stepRef.current,
@@ -57,7 +73,7 @@ const MatchLobby = () => {
         { x: 0, opacity: 1, duration: 0.5, ease: "power3.out" }
       );
     }
-  }, [step]); 
+  }, [step]);
 
   const handleNextClick = () => {
     if (step === 1) {
@@ -74,7 +90,7 @@ const MatchLobby = () => {
       }, 1000);
     } else {
       console.log("Name:", name, "Join Code:", joinCode);
-      setGuest(false);
+      guest ? setGuest(false) : setGuest(true);
     }
   };
   return (
@@ -87,7 +103,6 @@ const MatchLobby = () => {
         justifyContent: "center",
       }}
     >
-     
       <Box
         sx={{
           flex: 1,
@@ -101,9 +116,9 @@ const MatchLobby = () => {
           color: "#FFFFFF",
         }}
       >
-        <Avatar sx={{ width: 80, height: 80, mb: 1 }}>P1</Avatar>
-        <Typography variant="h5">Player 1</Typography>
-        <Typography variant="body2">Score: 0</Typography>
+        <Avatar sx={{ width: 80, height: 80, mb: 1 }} src={Profile } alt="User Profile" />
+        <Typography variant="h5">{islogin?UserData.Name :"waiting..."}</Typography>
+        
       </Box>
 
       {/* "VS" Divider with larger SVG Image */}
@@ -135,8 +150,6 @@ const MatchLobby = () => {
         />
       </Divider>
 
-      
-
       {/* Player 2 Section */}
       <Box
         sx={{
@@ -151,11 +164,11 @@ const MatchLobby = () => {
           color: "#02216F",
         }}
       >
-        <Avatar sx={{ width: 80, height: 80, mb: 1 }}>P2</Avatar>
-        <Typography variant="h5">Player 2</Typography>
-        <Typography variant="body2">Score: 0</Typography>
+        <Avatar sx={{ width: 80, height: 80, mb: 1 }}/>
+        <Typography variant="h5">Waiting...</Typography>
+        
       </Box>
-      {!guest ? (
+      {islogin ? (
         <Card
           sx={{
             maxWidth: isSm ? null : 450,
@@ -264,9 +277,9 @@ const MatchLobby = () => {
         open={guest}
         sx={{
           "& .MuiDialog-paper": {
-            borderRadius: "20px", 
-            width: { xs: "90%", sm: "80%", md: "100%" }, 
-            maxWidth: "600px", 
+            borderRadius: "20px",
+            width: { xs: "90%", sm: "80%", md: "100%" },
+            maxWidth: "600px",
           },
         }}
       >

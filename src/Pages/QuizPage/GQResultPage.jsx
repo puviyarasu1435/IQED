@@ -18,6 +18,7 @@ import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import { withStyles } from "@mui/styles";
 import { useLocation } from "react-router-dom";
+import { LandingHeader } from "../../Components";
 
 const CssTextField = withStyles({
   root: {
@@ -163,6 +164,7 @@ const GQSuccessPage = () => {
       }}
     >
       <ConfettiEffect />
+      <LandingHeader />
       <Box
         sx={{
           flexGrow: 1,
@@ -297,7 +299,7 @@ const GQSuccessPage = () => {
                 WhatsApp
               </Button>
             </Stack>
-            <Typography
+            {/* <Typography
               sx={{
                 textAlign: "center",
                 width: { md: "60%" },
@@ -334,7 +336,7 @@ const GQSuccessPage = () => {
               }}
             >
               SignUp
-            </Button>
+            </Button> */}
           </Box>
         )}
       </Box>

@@ -6,13 +6,14 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { GemsBox, LogoIcon, MenuBox, StreakBox } from "../General";
 import { useSelector } from "react-redux";
 
 const UserCard = () => {
   const UserData = useSelector((state) => state.UserState);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [Profile,setProfile] = useState("");
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -20,7 +21,13 @@ const UserCard = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  useEffect(() => {
+    if (UserData?.ProfileImage?.base64) {
+        setProfile(UserData.ProfileImage.base64);
+    } else {
+        setProfile(''); // Fallback if no image is available
+    }
+}, [UserData]);
   const theme = useTheme();
   const isMd = useMediaQuery(theme.breakpoints.down("md"));
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -72,8 +79,11 @@ const UserCard = () => {
           <Avatar
             width={44}
             height={44}
-            alt="Remy"
-            src="https://cdn-icons-png.flaticon.com/512/185/185810.png"
+            alt={UserData.Name}
+            src={Profile || "/ing"}
+            sx={{
+              bgcolor:'white'
+            }}
           />
         </IconButton>
         <MenuBox open={open} anchorEl={anchorEl} handleClose={handleClose} />

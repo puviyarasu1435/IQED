@@ -44,29 +44,7 @@ const LandingContainer = () => {
     "The test duration is approximately 25 minutes.",
   ];
   const handleQuizCraetion = () => {
-    try {
-      dispatch(resetQuiz());
-      toast.promise(
-        CreateQuizSession({
-          categoryName: "Geography",
-          hostId: "6736b861b254c95e3de18308",
-        }).unwrap(),
-        {
-          loading: "Creating Session...",
-          success: (responce) => {
-            navigate(`/Quiz/${responce.sessionId}`);
-            return <b>session Created</b>;
-          },
-          error: (e) => {
-            console.log(e)
-            return e;
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Failed to update quiz session:", error);
-      toast.error("sorry session not save");
-    }
+    navigate(`quiz/loader/Quiz`,{ replace: true } );
 };
 
   const ageGroups = [

@@ -80,7 +80,7 @@ const QuizPage = () => {
   const handleSubmit = async () => {
     dispatch(submitQuiz());
     if (!sessionStorage.getItem("UserId")) {
-      navigate("/result");
+      navigate("/result", { replace: true });
       return false
     }else{
       

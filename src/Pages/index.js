@@ -5,6 +5,7 @@ export { default as MissionPage } from "./MissionPage/MissionPage.jsx";
 export { default as GamePage } from "./GamePage/GamePage.jsx";
 export { default as MatchLobby } from "./GamePage/MatchPage/MatchLobby.jsx";
 export { default as QuizPage } from "./QuizPage/QuizPage.jsx";
+export { default as Quizloader } from "./QuizPage/Quizloader.jsx";
 export { default as ProfilePage } from "./ProfilePage/ProfilePage.jsx";
 export { default as LeaderboardPage } from "./LeaderBoardPage/LeaderboardPage.jsx";
 export { default as FeedBackPage } from "./FeedBackPage/FeedBack.jsx";

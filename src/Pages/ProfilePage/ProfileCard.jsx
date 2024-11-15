@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -54,10 +54,18 @@ const StatBox = ({ icon, value, label }) => (
 );
 
 const ProfileCard = ({onSettingsClick}) => {
+
   const UserData = useSelector((state) => state.UserState);
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const [Profile,setProfile] = useState("");
+  useEffect(() => {
+    if (UserData?.ProfileImage?.base64) {
+        setProfile(UserData.ProfileImage.base64);
+    } else {
+        setProfile(''); // Fallback if no image is available
+    }
+}, [UserData]);
   return (
     <Box
       sx={{
@@ -95,11 +103,12 @@ const ProfileCard = ({onSettingsClick}) => {
               }}
             >
               <Avatar
-                src="/path/to/avatar.jpg"
+                src={Profile|| ""}
                 sx={{
                   width: 100,
                   height: 100,
                   border: "2px solid #ffffff",
+                  bgcolor:'white'
                 }}
               />
               <IconButton

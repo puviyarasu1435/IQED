@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Typography,
@@ -35,16 +35,24 @@ const AccountSettings = ({ onClose }) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const userId = sessionStorage.getItem("UserId");
+  console.log("User ID:", userId);
   const [profileFields, setProfileFields] = useState([
     { label: "Name", value: UserData.Name || "Gowthamraj" },
     { label: "School Name", value: UserData.School_Name || "TNGR" },
     { label: "Grade", value: UserData.Grade || "10th" },
   ]);
-
+console.log("UserData",UserData);
   const [profileImagePreview, setProfileImagePreview] = useState(
-    UserData.profileImageUrl || "/default-avatar.jpg"
+    UserData.profileImage || "/default-avatar.jpg"
   );
+  useEffect(() => {
+    if (UserData?.ProfileImage?.base64) {
+        setProfileImagePreview(UserData.ProfileImage.base64);
+    } else {
+        setProfileImagePreview(''); // Fallback if no image is available
+    }
+}, [UserData]);
   const [profileImageBase64, setProfileImageBase64] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
@@ -60,7 +68,8 @@ const AccountSettings = ({ onClose }) => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [updateUserProfile, { isLoading, isSuccess, isError, error }] = useUpdateUserProfileMutation();
+  const [updateUserProfile, { isLoading, isSuccess, isError, error }] =
+    useUpdateUserProfileMutation();
 
   const toggleShowOldPassword = () => setShowOldPassword((prev) => !prev);
   const toggleShowNewPassword = () => setShowNewPassword((prev) => !prev);
@@ -100,6 +109,10 @@ const AccountSettings = ({ onClose }) => {
   };
 
   const handleSave = async () => {
+    if (!userId) {
+      console.error("User ID is not found in sessionStorage.");
+      return;
+    }
     const updatedUserData = { ...modifiedFields };
     profileFields.forEach((field) => {
       if (field.changed) {
@@ -114,16 +127,26 @@ const AccountSettings = ({ onClose }) => {
     if (Object.keys(updatedUserData).length > 0) {
       console.log("Updated Profile Data:", updatedUserData);
       try {
+        // Log the full payload being sent
+        console.log("Sending API request with User ID and updated data:", {
+          userid: userId, 
+          ...updatedUserData
+        });
+  
+        // Send the request to the API
         await updateUserProfile({
-          "userid": sessionStorage.getItem("UserId"),...updatedUserData}
-        ).unwrap(); // Send data to the mutation
-        // dispatch(UpdateUser(updatedUserData));
+          userId: userId,  // Ensure this is the correct user ID
+          ...updatedUserData
+        }).unwrap();
+  
+        // Update the Redux state
+        dispatch(UpdateUser(updatedUserData));
         alert('Profile updated successfully!');
       } catch (err) {
         console.error('Failed to update profile:', err);
       }
     }
-
+  
     setIsEditing(false);
     setIsChanged(false);
   };
@@ -131,7 +154,7 @@ const AccountSettings = ({ onClose }) => {
   const handleCancel = () => {
     setIsEditing(false);
     setIsChanged(false);
-    setProfileImagePreview(UserData.profileImageUrl || "/default-avatar.jpg");
+    setProfileImagePreview(UserData.ProfileImage.base64 || "/default-avatar.jpg");
     setProfileImageBase64("");
   };
 
@@ -283,7 +306,8 @@ const AccountSettings = ({ onClose }) => {
         >
           <Box sx={{ position: "relative" }}>
             <Avatar
-              src={profileImagePreview}
+          
+          src={profileImagePreview || '/default-avatar.jpg'} 
               sx={{ width: 100, height: 100, mb: "8px" }}
             />
             {isEditing ? (
@@ -456,7 +480,7 @@ const AccountSettings = ({ onClose }) => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={toggleShowNewPassword }>
+                    <IconButton onClick={toggleShowNewPassword}>
                       {showNewPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
@@ -478,7 +502,7 @@ const AccountSettings = ({ onClose }) => {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
-                    <IconButton onClick={toggleShowConfirmPassword  }>
+                    <IconButton onClick={toggleShowConfirmPassword}>
                       {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>

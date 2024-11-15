@@ -14,11 +14,51 @@ import { LoadingScreen } from "../../Components";
 import { B_Medal, CUP, G_Medal, Null_Medal, S_Medal } from "../../assets";
 
 const mockLeaderboardData = [
-  { _id: "1", Rank: 1, Name: "Alice", XP: 1500, CurrentLevel: 10 ,profile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgEBjr3Tst-f06ckrV66JHwxnDGB0nop8Wg&s'},
-  { _id: "2", Rank: 2, Name: "Bob", XP: 1200, CurrentLevel: 8,profile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgEBjr3Tst-f06ckrV66JHwxnDGB0nop8Wg&s'},
-  { _id: "3", Rank: 3, Name: "Charlie", XP: 1100, CurrentLevel: 7 ,profile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgEBjr3Tst-f06ckrV66JHwxnDGB0nop8Wg&s'},
-  { _id: "4", Rank: 4, Name: "David", XP: 900, CurrentLevel: 6,profile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgEBjr3Tst-f06ckrV66JHwxnDGB0nop8Wg&s' },
-  { _id: "5", Rank: 5, Name: "Eve", XP: 800, CurrentLevel: 5 ,profile: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgEBjr3Tst-f06ckrV66JHwxnDGB0nop8Wg&s'},
+  {
+    _id: "1",
+    Rank: 1,
+    Name: "Alice",
+    XP: 1500,
+    CurrentLevel: 10,
+    profile:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgEBjr3Tst-f06ckrV66JHwxnDGB0nop8Wg&s",
+  },
+  {
+    _id: "2",
+    Rank: 2,
+    Name: "Bob",
+    XP: 1200,
+    CurrentLevel: 8,
+    profile:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgEBjr3Tst-f06ckrV66JHwxnDGB0nop8Wg&s",
+  },
+  {
+    _id: "3",
+    Rank: 3,
+    Name: "Charlie",
+    XP: 1100,
+    CurrentLevel: 7,
+    profile:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgEBjr3Tst-f06ckrV66JHwxnDGB0nop8Wg&s",
+  },
+  {
+    _id: "4",
+    Rank: 4,
+    Name: "David",
+    XP: 900,
+    CurrentLevel: 6,
+    profile:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgEBjr3Tst-f06ckrV66JHwxnDGB0nop8Wg&s",
+  },
+  {
+    _id: "5",
+    Rank: 5,
+    Name: "Eve",
+    XP: 800,
+    CurrentLevel: 5,
+    profile:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjgEBjr3Tst-f06ckrV66JHwxnDGB0nop8Wg&s",
+  },
 ];
 // Reusable Header Component
 const LeaderboardHeader = () => (
@@ -78,8 +118,7 @@ const LeaderboardRow = ({ player, index }) => {
   let medalSrc = Null_Medal;
   if (player.Rank === 1) medalSrc = G_Medal; // Gold medal for 1st place
   else if (player.Rank === 2) medalSrc = S_Medal; // Silver medal for 2nd place
-  else if (player.Rank === 3) medalSrc = B_Medal; 
-  
+  else if (player.Rank === 3) medalSrc = B_Medal;
 
   return (
     <Box
@@ -169,11 +208,11 @@ const LeaderboardPage = () => {
   console.log(data);
 
   const filteredLeaderboardData = useMemo(() => {
-    return mockLeaderboardData.filter((player) =>
+    if (!data.users || !Array.isArray(data.users)) return [];
+    return data.users.filter((player) =>
       player.Name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [searchQuery]);
-  
+  }, [data, searchQuery]);
 
   return (
     <Box
@@ -249,68 +288,71 @@ const LeaderboardPage = () => {
 
       <Divider sx={{ borderColor: "#FFDA55", borderBottomWidth: 2 }} />
       <Box>
-      <Box
-        sx={{
-          p: isSm ? "10px" : "20px",
-          display: "flex",
-          flexDirection: "column",
-          flexGrow: 0,
-        }}
-      >
-        <LeaderboardHeader />
-      </Box>
+        <Box
+          sx={{
+            p: isSm ? "10px" : "20px",
+            display: "flex",
+            flexDirection: "column",
+            flexGrow: 0,
+          }}
+        >
+          <LeaderboardHeader />
+        </Box>
 
-      <Box
-        sx={{
-          p: isSm ? "10px" : "20px",
-          overflowX: "auto",
-          overflowY: "auto",
-          whiteSpace: "nowrap",
-          display: "flex",
-          flexDirection: "column",
-          borderTopWidth: "2px",
-          borderRightWidth: "0",
-          borderBottomWidth: "0",
-          borderLeftWidth: "0",
-          borderStyle: "solid",
+        <Box
+          sx={{
+            p: isSm ? "10px" : "20px",
+            overflowX: "auto",
+            overflowY: "auto",
+            whiteSpace: "nowrap",
+            display: "flex",
+            flexDirection: "column",
+            borderTopWidth: "2px",
+            borderRightWidth: "0",
+            borderBottomWidth: "0",
+            borderLeftWidth: "0",
+            borderStyle: "solid",
 
-          borderColor: "#02216F",
-          flexGrow: 1,
-          borderRadius: "10px",
-          gap: "5px",
-          // bgcolor: "#F6FBFF",
-          // boxShadow: "3px 4px #02216F",
-          scrollbarWidth: "none", // For Firefox
-          "&::-webkit-scrollbar": {
-            display: "none",
-            height: "8px",
-            backgroundColor: "#f5f5f5",
-          },
-          "&::-webkit-scrollbar-thumb": {
-            backgroundColor: "#ccc",
+            borderColor: "#02216F",
+            flexGrow: 1,
             borderRadius: "10px",
-          },
-        }}
-      >
-        {!isLoading?filteredLeaderboardData.length>0 ? (
-          // data?.users?.map((user, index) => (
-            filteredLeaderboardData?.map((user, index) => (
-            <LeaderboardRow key={user._id} player={user} index={index} />
-          ))
-        ) : (
-          <Typography
-            sx={{
-              textAlign: "center",
-              mt: 2,
-              color: "#1A49BA",
-              fontWeight: "bold",
-            }}
-          >
-            No players found
-          </Typography>
-        ):<LoadingScreen/>}
-        
-      </Box>
+            gap: "5px",
+            // bgcolor: "#F6FBFF",
+            // boxShadow: "3px 4px #02216F",
+            scrollbarWidth: "none", // For Firefox
+            "&::-webkit-scrollbar": {
+              display: "none",
+              height: "8px",
+              backgroundColor: "#f5f5f5",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#ccc",
+              borderRadius: "10px",
+            },
+          }}
+        >
+          {!isLoading ? (
+            filteredLeaderboardData.length > 0 ? (
+              // data?.users?.map((user, index) => (
+              filteredLeaderboardData?.map((user, index) => (
+                <LeaderboardRow key={user._id} player={user} index={index} />
+              ))
+            ) : (
+              <Typography
+                sx={{
+                  textAlign: "center",
+                  mt: 2,
+                  color: "#1A49BA",
+                  fontWeight: "bold",
+                }}
+              >
+                No players found
+              </Typography>
+            )
+          ) : (
+            <LoadingScreen />
+          )}
+        </Box>
       </Box>
     </Box>
   );

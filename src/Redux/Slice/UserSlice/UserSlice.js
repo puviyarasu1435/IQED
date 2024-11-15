@@ -20,7 +20,6 @@ const UserSlice = createSlice({
     XP: 0,
   },
   reducers: {
-    // You can add local reducers if needed
     UpdateUser: (state, action) => {
       Object.assign(state, action.payload);
     },
