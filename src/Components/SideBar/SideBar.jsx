@@ -18,7 +18,7 @@ const SideBar = () => {
   const { data, error, isLoading } = useGetUserByIdQuery(sessionStorage.getItem("UserId"));
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
   const UserId = sessionStorage.getItem("UserId");
-  const { data, error, isLoading } = useGetUserByIdQuery(UserId);
+  // const { data, error, isLoading } = useGetUserByIdQuery(UserId);
   const settings = {
     dots: false,
     infinite: true,
