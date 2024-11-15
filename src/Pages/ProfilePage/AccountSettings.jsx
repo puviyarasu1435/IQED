@@ -27,6 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { UpdateUser } from "../../Redux/Slice/UserSlice/UserSlice";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useUpdateUserProfileMutation } from "../../Redux/RTK/AuthAPI/AuthAPI";
 const AccountSettings = ({ onClose }) => {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -59,6 +60,7 @@ const AccountSettings = ({ onClose }) => {
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [updateUserProfile, { isLoading, isSuccess, isError, error }] = useUpdateUserProfileMutation();
 
   const toggleShowOldPassword = () => setShowOldPassword((prev) => !prev);
   const toggleShowNewPassword = () => setShowNewPassword((prev) => !prev);
@@ -97,7 +99,7 @@ const AccountSettings = ({ onClose }) => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const updatedUserData = { ...modifiedFields };
     profileFields.forEach((field) => {
       if (field.changed) {
@@ -111,7 +113,15 @@ const AccountSettings = ({ onClose }) => {
 
     if (Object.keys(updatedUserData).length > 0) {
       console.log("Updated Profile Data:", updatedUserData);
-      dispatch(UpdateUser(updatedUserData));
+      try {
+        await updateUserProfile({
+          "userid": sessionStorage.getItem("UserId"),...updatedUserData}
+        ).unwrap(); // Send data to the mutation
+        // dispatch(UpdateUser(updatedUserData));
+        alert('Profile updated successfully!');
+      } catch (err) {
+        console.error('Failed to update profile:', err);
+      }
     }
 
     setIsEditing(false);

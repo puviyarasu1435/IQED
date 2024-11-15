@@ -93,8 +93,29 @@ export default function LevelDetails(LevelData) {
 
   const handleStepClick = async (stepIndex) => {
     setActiveStep(stepIndex);
-
-    navigate("/quiz/load")
+    if(sessionStorage.getItem("UserId")){
+      try {
+        dispatch(resetQuiz())
+        toast.promise(CreateQuizSession({
+          "categoryName":"Geography",
+          "hostId":sessionStorage.getItem("UserId")
+        }
+        ).unwrap(), {
+          loading: "Creating Session...",
+          success: (responce) => {
+            navigate(`/Quiz/${responce.sessionId}`);
+            return <b>session Created</b>;
+          },
+          error: <b>Could not Add Try again.</b>,
+        });     
+      } catch (error) {
+        console.error("Failed to update quiz session:", error);
+        toast.error("sorry session not save");
+      }
+    }else{
+      toast.error("sessionStorage not found relogin");
+    }
+    
   };
 
   // Function to arrange steps into rows

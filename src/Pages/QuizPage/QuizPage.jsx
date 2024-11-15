@@ -27,7 +27,6 @@ import {
   useGetUserByIdQuery,
   useUpdateUserStatsMutation,
 } from "../../Redux/RTK/AuthAPI/AuthAPI";
-import { UpdateUser } from "../../Redux/Slice/UserSlice/UserSlice";
 
 const QuizPage = () => {
   const { sessionId } = useParams();
@@ -57,8 +56,8 @@ const QuizPage = () => {
   }
 
   useEffect(() => {
-      startTimerRef.current();
-  }, []);
+    if (!isLoading) startTimerRef.current();
+  }, [isLoading]);
 
   const handleOnPrevious = () => {
     dispatch(prevQuestion());
@@ -79,23 +78,26 @@ const QuizPage = () => {
   };
 
   const handleSubmit = async () => {
-    if (!sessionStorage.getItem("UserId")) {
-      navigate("/missions");
-    }
     dispatch(submitQuiz());
-    setResultDialog(true);
-    pauseTimerRef.current();
-    dispatch(setTimer(getTimeRef.current()));
-
-    updateUserStats({
-      userId: sessionData?.host,
-      streakIncrement: 0,
-      xpToAdd:(QuizState?.questionsList.length * 60 - QuizState.time) * 1 +
-QuizState.score * 2,
-      rankToUpdate: Math.floor(UserData.XP / 10000),
-      iQGemsToAdd: 1,
-    });
-    dispatch(UpdateUser(data.user));
+    if (!sessionStorage.getItem("UserId")) {
+      navigate("/result");
+      return false
+    }else{
+      
+      setResultDialog(true);
+      pauseTimerRef.current();
+      dispatch(setTimer(getTimeRef.current()));
+      updateUserStats({
+        userId: sessionData?.host,
+        streakIncrement: 0,
+        xpToAdd:
+          (QuizState?.questionsList.length * 60 - QuizState.time) * 1 +
+          QuizState.score * 2,
+        rankToUpdate: Math.floor(UserData.XP / 10000),
+        iQGemsToAdd: 1,
+      });
+      dispatch(UpdateUser(data.user));
+    }
     try {
       await updateQuizSession({
         sessionId,
@@ -111,9 +113,13 @@ QuizState.score * 2,
     }
   };
 
-  const progressValue =((QuizState?.currentQuestionIndex + 1) / QuizState?.questionsList.length) *100;
+  const progressValue =
+    ((QuizState?.currentQuestionIndex + 1) / QuizState?.questionsList.length) *
+    100;
 
-
+  if (isLoading) {
+    return <></>;
+  }
 
   return (
     <Box sx={{ height: "100%" }}>
