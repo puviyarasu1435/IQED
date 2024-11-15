@@ -11,6 +11,7 @@ const SidebarContainer = styled(Box)({
     display: "flex",
     overflow:'hidden',
     backgroundColor:'#ffff',
+    border:'2px solid #02216F'
     
 });
 

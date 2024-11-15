@@ -7,7 +7,7 @@ const ProgressCard = ({ icon, title, Count}) => {
       variant="outlined"
       sx={{
         height:'50px',
-        width:'90%',
+        
         padding: 2,
         display: "flex",
         alignItems: "center",

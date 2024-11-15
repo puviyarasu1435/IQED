@@ -18,6 +18,7 @@ import {
   ProfilePage,
   LeaderboardPage,
   FeedBackPage,
+  Test,
 } from "../Pages";
 import UserLayout from "../Pages/Layout/UserLayout";
 import MatchLayout from "../Pages/Layout/MatchLayout";
@@ -30,6 +31,7 @@ export const Routers = createBrowserRouter(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<LandingPage />} />
       <Route path="auth" element={<AuthPage />} />
+      <Route path="Test" element={<Test />} />
       <Route element={<AuthLayout />}>
         <Route element={<UserLayout />}>
           <Route path="explore" element={<ExplorePage />} />

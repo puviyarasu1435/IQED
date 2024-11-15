@@ -9,12 +9,14 @@ import {
 } from "../../Common";
 import { IQCoinIcon, IQGemIcon, IQRankIcon } from "../../assets/Image";
 import { useSelector } from "react-redux";
-;
+import { useGetUserByIdQuery } from "../../Redux/RTK/AuthAPI/AuthAPI";
 
 const SideBar = () => {
   const UserData = useSelector((state) => state.UserState);
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const UserId = sessionStorage.getItem("UserId");
+  const { data, error, isLoading } = useGetUserByIdQuery(UserId);
   const settings = {
     dots: false,
     infinite: true,

@@ -9,7 +9,14 @@ import {
   CardActions,
   Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 const LevelCard = ({ index, content }) => {
+  const navigate = useNavigate();  // Initialize navigate function
+
+  // Function to navigate to the test page
+  const handleCardClick = () => {
+    navigate('/test');  // Navigate to the test page with the level index
+  };
   return (
     <Card
       sx={{
@@ -19,7 +26,7 @@ const LevelCard = ({ index, content }) => {
         boxSizing: "border-box",
       }}
     >
-      <CardActionArea>
+      <CardActionArea onClick={handleCardClick}>
         <CardMedia
           component="img"
           height="140"
