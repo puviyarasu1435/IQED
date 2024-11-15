@@ -6,9 +6,11 @@ const initialState = {
   currentQuestionIndex: 0,
   answeredQuestions: {}, // Stores user answers as { questionId: answer }
   score: 0,
+  isLive: true,
+  time: 0,
 };
 
-const quizSlice = createSlice({
+const QuizSlice = createSlice({
   name: "QuizState",
   initialState,
   reducers: {
@@ -18,6 +20,9 @@ const quizSlice = createSlice({
     answerQuestion: (state, action) => {
       const { questionId, answer } = action.payload;
       state.answeredQuestions[questionId] = answer;
+    },
+    setTimer: (state, action) => {
+      state.time = action.payload;
     },
     nextQuestion: (state) => {
       if (state.currentQuestionIndex < state.questionsList.length - 1) {
@@ -36,6 +41,7 @@ const quizSlice = createSlice({
       state.currentQuestionIndex = 0;
       state.answeredQuestions = {};
       state.score = 0;
+      state.isLive = true;
     },
     submitQuiz: (state) => {
       state.score = Object.entries(state.answeredQuestions).reduce(
@@ -47,14 +53,15 @@ const quizSlice = createSlice({
         },
         0
       );
+      state.isLive = false;
     },
   },
   extraReducers: (builder) => {
     builder.addMatcher(
-      QuizApi.endpoints.getQuestionsByCategory.matchFulfilled,
+      QuizApi.endpoints.getQuizSessionById.matchFulfilled,
       (state, action) => {
-        console.log(action.payload);
-        state.questionsList = action.payload; // Update questionsList with the fetched data
+        console.log("ext",action.payload);
+        state.questionsList = action.payload.questions; // Update questionsList with the fetched data
       }
     );
   },
@@ -68,5 +75,7 @@ export const {
   resetQuiz,
   submitQuiz,
   setQuestionIndex,
-} = quizSlice.actions;
-export default quizSlice;
+  setTimer
+} = QuizSlice.actions;
+
+export default QuizSlice;

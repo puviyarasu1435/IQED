@@ -1,9 +1,8 @@
-// Timer.jsx
 import React, { useState, useEffect, useRef } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
-const Timer = ({ initialTime = 60, onTimeUp, startTimerProp, pauseTimerProp, resetTimerProp }) => {
+const Timer = ({ initialTime = 60, onTimeUp, startTimerProp, pauseTimerProp, resetTimerProp, getTimeProp }) => {
   const [time, setTime] = useState(initialTime);
   const [isActive, setIsActive] = useState(false);
   const timerRef = useRef(null);
@@ -51,12 +50,13 @@ const Timer = ({ initialTime = 60, onTimeUp, startTimerProp, pauseTimerProp, res
     return () => clearInterval(timerRef.current);
   }, []);
 
-  // Expose start, pause, and reset functions to the parent component
+  // Expose start, pause, reset, and getTime functions to the parent component
   useEffect(() => {
     if (startTimerProp) startTimerProp(startTimer);
     if (pauseTimerProp) pauseTimerProp(pauseTimer);
     if (resetTimerProp) resetTimerProp(resetTimer);
-  }, [startTimerProp, pauseTimerProp, resetTimerProp]);
+    if (getTimeProp) getTimeProp(() => time); // Expose current time getter
+  }, [startTimerProp, pauseTimerProp, resetTimerProp, getTimeProp, time]);
 
   return (
     <Box

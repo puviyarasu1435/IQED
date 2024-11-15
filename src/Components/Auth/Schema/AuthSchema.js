@@ -2,7 +2,7 @@ import * as yup from "yup";
 
 export const SignUpvalidSchema = [
   yup.object().shape({
-    userName: yup.string().required("UserName is required"),
+    userName: yup.string().required("UserName is required").min(8, "UserName must be at least 8 characters long"),
     name: yup.string().required(),
     age: yup
       .string()

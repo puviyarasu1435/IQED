@@ -14,7 +14,8 @@ import AI_Icon from "./Icons/AI_Icon.png";
 import feedback from "./Icons/feedback.png";
 import SVGLoader from "./Others/SVGLoader.jsx";
 import VSIcon from "./Icons/VSIcon.png";
-
+import popGIF from "./Gif/pop.gif";
+import SuccessManSVG from "./Others/SuccessMan.svg";
 export {
   WhiteBackgroundSVG,
   YellowBackgroundSVG,
@@ -31,5 +32,7 @@ export {
   feedback,
   SVGLoader,
   VS,
-  VSIcon
+  VSIcon,
+  popGIF,
+  SuccessManSVG
 };

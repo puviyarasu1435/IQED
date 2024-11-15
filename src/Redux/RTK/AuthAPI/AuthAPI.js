@@ -59,6 +59,13 @@ export const AuthApi = createApi({
         method: 'GET',
       }),
     }),
+    updateUserStats: builder.mutation({
+      query: (data) => ({
+        url: 'updateUserStats',  // Endpoint on the server
+        method: 'POST',
+        body: data,  // The data being sent, such as userId, streakIncrement, etc.
+      }),
+    }),
     getUsersSortedByMaxStreakAndMinRank: builder.query({
       query: () => ({
         url: 'sorted',  // The endpoint where sorted users are fetched from
@@ -75,6 +82,7 @@ export const {
   useVerifyEmailOTPMutation,
   useSendMobileOTPMutation,
   useVerifyMobileOTPMutation,
-  useGetUserByIdQuery, 
+  useGetUserByIdQuery,
+  useUpdateUserStatsMutation,
   useGetUsersSortedByMaxStreakAndMinRankQuery ,
 } = AuthApi;

@@ -59,7 +59,7 @@ const QuestionBox = ({ index, Question }) => {
               component="img"
               src={RabbitIMG}
               sx={{
-                width: { xs: "50%", sm: "250px", md: "300px" },
+                width:"250px",
                 height: "auto",
                 maxWidth: "100%",
               }}

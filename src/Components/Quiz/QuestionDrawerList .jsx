@@ -7,7 +7,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setQuestionIndex } from "../../Redux/Slice/QuizSlice/QuizSlice";
 
 export default function QuestionDrawerList({
@@ -18,7 +18,7 @@ export default function QuestionDrawerList({
   currentQuestionIndex,
   handleQuizListClick,
   handleSubmit,
-  handleLeave,
+  handleQuit,
 }) {
   const getBackgroundColor = (index) => {
     if (answeredQuestions.includes(index)) return "#BFFFE2";
@@ -31,17 +31,22 @@ export default function QuestionDrawerList({
     if (index === currentQuestionIndex) return "1px solid #FFDA55";
     return "";
   };
+  const QuizState = useSelector((state) => state.QuizState);
+
+ 
 
   const DrawerList = useMemo(
     () => (
       <Box
-        sx={{ width: 300, zIndex: 99999 }}
+        sx={{
+          width: 350,
+          zIndex: 99999,
+        }}
         role="presentation"
         onClick={handleClose}
       >
         <Box sx={{ p: 2, fontWeight: "bold" }}>
-          <Typography>Topic Name</Typography>
-          <Typography>Unit Name</Typography>
+          <Typography>dsff</Typography>
         </Box>
         <Divider />
         <Box
@@ -49,8 +54,7 @@ export default function QuestionDrawerList({
             bgcolor: "white",
             height: "80%", // Adjusted height to make space for buttons
             borderRadius: "0 0 20px 20px",
-            overflowY: "auto",
-            p: 1,
+            p: 2,
           }}
         >
           <List>
@@ -58,7 +62,7 @@ export default function QuestionDrawerList({
               <ListItem
                 key={index}
                 sx={{
-                  bgcolor: getBackgroundColor(index),
+                  bgcolor:QuizState.answeredQuestions[quiz._id]?"#BFFFE2":"#c5c5c5",
                   border: getBorderColor(index),
                   borderRadius: "10px",
                   mt: 1,
@@ -84,12 +88,13 @@ export default function QuestionDrawerList({
                 />
               </ListItem>
             ))}
+            
           </List>
         </Box>
         <Box
           sx={{
             display: "flex",
-            flexDirection:'column',
+            flexDirection: "column",
             p: 2,
           }}
           gap={2}
@@ -105,7 +110,7 @@ export default function QuestionDrawerList({
           <Button
             variant="outlined"
             color="error"
-            onClick={handleLeave}
+            onClick={handleQuit}
             sx={{ width: "100%" }}
           >
             Leave
@@ -120,12 +125,20 @@ export default function QuestionDrawerList({
       handleClose,
       handleQuizListClick,
       handleSubmit,
-      handleLeave,
+      handleQuit,
     ]
   );
 
   return (
-    <Drawer open={open} onClose={handleClose}>
+    <Drawer sx={{
+      "& .MuiDrawer-paper": {
+        overflowY: "auto",
+        "&::-webkit-scrollbar": {
+          display: "none",
+        },
+        scrollbarWidth: "none",
+      },
+    }} open={open} onClose={handleClose}>
       {DrawerList}
     </Drawer>
   );

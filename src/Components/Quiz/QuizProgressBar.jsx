@@ -47,7 +47,7 @@ const QuizProgressBar = ({
 
         <Box width={50}>
           <Typography fontWeight={700} fontSize={20}>
-            {`${progressValue}%`}
+            {`${Math.floor(progressValue)}%`}
           </Typography>
         </Box>
       </Box>
@@ -60,7 +60,7 @@ const QuizProgressBar = ({
           },
         }}
         variant="determinate"
-        value={progressValue}
+        value={Math.floor(progressValue)}
       />
     </Box>
   );

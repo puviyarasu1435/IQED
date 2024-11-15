@@ -6,6 +6,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { IQCoinIcon } from "../../assets";
 
 
 
@@ -81,7 +82,7 @@ const RewardCard = ({ title, leftText, coinValue }) => {
         <Box sx={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <Box
             component="img"
-            src={Coin}
+            src={IQCoinIcon}
             alt="coin"
             sx={{
               width: isSm ? "30px" : "50px",
