@@ -17,78 +17,112 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  InputAdornment,
 } from "@mui/material";
 import CancelIcon from "@mui/icons-material/Cancel";
 import EditIcon from "@mui/icons-material/Edit";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
-
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { UpdateUser } from "../../Redux/Slice/UserSlice/UserSlice";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 const AccountSettings = ({ onClose }) => {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const UserData = useSelector((state) => state.UserState);
 
-  // Profile fields data including the profile image field
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [profileFields, setProfileFields] = useState([
-    { label: "Username", value: "john_com9500_34505" },
-    { label: "First Name", value: "Gowthamraj" },
-    { label: "Last Name", value: "VP" },
-    { label: "Grade", value: "3rd Grade" },
-    { label: "Language", value: "English" },
-    { label: "Profile Image", value: "/path/to/avatar.jpg" }, // Profile image added
+    { label: "Name", value: UserData.Name || "Gowthamraj" },
+    { label: "School Name", value: UserData.School_Name || "TNGR" },
+    { label: "Grade", value: UserData.Grade || "10th" },
   ]);
 
+  const [profileImagePreview, setProfileImagePreview] = useState(
+    UserData.profileImageUrl || "/default-avatar.jpg"
+  );
+  const [profileImageBase64, setProfileImageBase64] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
-  const [originalFields, setOriginalFields] = useState(profileFields);
-
-  // State for dialogs
   const [openChangePassword, setOpenChangePassword] = useState(false);
   const [openDeleteAccount, setOpenDeleteAccount] = useState(false);
+  const [oldPasswordError, setOldPasswordError] = useState("");
+  const [newPasswordError, setNewPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [modifiedFields, setModifiedFields] = useState({});
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const toggleShowOldPassword = () => setShowOldPassword((prev) => !prev);
+  const toggleShowNewPassword = () => setShowNewPassword((prev) => !prev);
+  const toggleShowConfirmPassword = () =>
+    setShowConfirmPassword((prev) => !prev);
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
+  const handleInputChange = (label, value) => {
+    setProfileFields((prevFields) =>
+      prevFields.map((field) =>
+        field.label === label ? { ...field, value } : field
+      )
+    );
+
+    setModifiedFields((prevModified) => ({
+      ...prevModified,
+      [label]: value,
+    }));
+    setIsChanged(true);
+  };
+
+  const handleProfileImageChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImageBase64(reader.result); // Store the base64 image for dispatch
+        setIsChanged(true);
+      };
+      reader.readAsDataURL(file);
+
+      const previewUrl = URL.createObjectURL(file);
+      setProfileImagePreview(previewUrl); // Show the preview directly
+    }
+  };
+
   const handleSave = () => {
-    console.log("Updated Profile Fields:", profileFields);
-    setOriginalFields(profileFields);
+    const updatedUserData = { ...modifiedFields };
+    profileFields.forEach((field) => {
+      if (field.changed) {
+        updatedUserData[field.label.replace(" ", "_")] = field.value;
+      }
+    });
+
+    if (profileImageBase64) {
+      updatedUserData.profileImage = profileImageBase64;
+    }
+
+    if (Object.keys(updatedUserData).length > 0) {
+      console.log("Updated Profile Data:", updatedUserData);
+      dispatch(UpdateUser(updatedUserData));
+    }
+
     setIsEditing(false);
     setIsChanged(false);
   };
 
   const handleCancel = () => {
-    setProfileFields(originalFields);
     setIsEditing(false);
     setIsChanged(false);
-  };
-
-  const handleInputChange = (label, value) => {
-    setProfileFields((prevFields) => {
-      const updatedFields = prevFields.map((field) =>
-        field.label === label ? { ...field, value } : field
-      );
-      const hasChanges = updatedFields.some(
-        (field, index) => field.value !== prevFields[index].value
-      );
-      setIsChanged(hasChanges);
-      return updatedFields;
-    });
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const newImageURL = URL.createObjectURL(file);
-      setProfileFields((prevFields) =>
-        prevFields.map((field) =>
-          field.label === "Profile Image"
-            ? { ...field, value: newImageURL }
-            : field
-        )
-      );
-      setIsChanged(true);
-    }
+    setProfileImagePreview(UserData.profileImageUrl || "/default-avatar.jpg");
+    setProfileImageBase64("");
   };
 
   const openChangePasswordDialog = () => setOpenChangePassword(true);
@@ -101,18 +135,51 @@ const AccountSettings = ({ onClose }) => {
   const openDeleteAccountDialog = () => setOpenDeleteAccount(true);
   const closeDeleteAccountDialog = () => setOpenDeleteAccount(false);
 
-  const handlePasswordChange = () => {
-    if (newPassword === confirmPassword) {
-      console.log("Password updated successfully");
-      closeChangePasswordDialog();
-    } else {
-      alert("Passwords do not match!");
+  const handlePasswordChange = (event) => {
+    event.preventDefault(); // Prevent default form submission
+
+    const passwordCriteria = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    // Clear previous errors
+    setOldPasswordError("");
+    setNewPasswordError("");
+    setConfirmPasswordError("");
+
+    // Validate old password
+    if (oldPassword !== UserData.Password) {
+      setOldPasswordError("Incorrect current password.");
+      return;
     }
+
+    // Validate new password criteria
+    if (!passwordCriteria.test(newPassword)) {
+      setNewPasswordError(
+        "Password must be at least 8 characters long, with at least one uppercase letter and one number."
+      );
+      return;
+    }
+
+    // Validate confirm password matches new password
+    if (newPassword !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match.");
+      return;
+    }
+
+    // Clear errors and log the new password
+    console.log("New password:", newPassword); // Log the new password
+    dispatch(UpdateUser({ Password: newPassword }));
+    closeChangePasswordDialog();
   };
 
   const handleDeleteAccount = () => {
     console.log("Account deleted");
     closeDeleteAccountDialog();
+  };
+  const handleLogOut = () => {
+    sessionStorage.clear();
+    navigate("/auth");
+    toast.success("Logout..");
+    handleClose();
   };
 
   const hoverEffect = {
@@ -143,7 +210,7 @@ const AccountSettings = ({ onClose }) => {
         boxSizing: "border-box",
         gap: "20px",
         overflow: "hidden",
-        marginTop:'10px',
+        marginTop: "10px",
       }}
     >
       <Box
@@ -191,9 +258,9 @@ const AccountSettings = ({ onClose }) => {
           border: "2px solid",
           borderColor: "#02216F",
           boxShadow: "2px 3px #02216F",
-          boxSizing:'border-box',
-          mb:'10px',
-          mr:'10px'
+          boxSizing: "border-box",
+          mb: "10px",
+          mr: "10px",
         }}
       >
         <Box
@@ -206,7 +273,7 @@ const AccountSettings = ({ onClose }) => {
         >
           <Box sx={{ position: "relative" }}>
             <Avatar
-              src={profileFields.find((field) => field.label === "Profile Image").value}
+              src={profileImagePreview}
               sx={{ width: 100, height: 100, mb: "8px" }}
             />
             {isEditing ? (
@@ -216,7 +283,7 @@ const AccountSettings = ({ onClose }) => {
                   accept="image/*"
                   id="profile-image-upload"
                   style={{ display: "none" }}
-                  onChange={handleImageUpload}
+                  onChange={handleProfileImageChange}
                 />
                 <IconButton
                   sx={{
@@ -257,6 +324,20 @@ const AccountSettings = ({ onClose }) => {
         </Typography>
 
         <List sx={{ mb: "10px" }}>
+          <ListItem>
+            <ListItemText
+              primary="Username"
+              secondary={UserData.UserName ? UserData.UserName : "john9500"}
+            />
+          </ListItem>
+          <ListItem>
+            <Divider />
+            <ListItemText
+              primary="Email"
+              secondary={UserData.Email ? UserData.Email : "john9500@gmail.com"}
+            />
+          </ListItem>
+          <Divider />
           {profileFields.map((field) => (
             <React.Fragment key={field.label}>
               {field.label !== "Profile Image" && (
@@ -272,7 +353,10 @@ const AccountSettings = ({ onClose }) => {
                       variant="outlined"
                     />
                   ) : (
-                    <ListItemText primary={field.label} secondary={field.value} />
+                    <ListItemText
+                      primary={field.label}
+                      secondary={field.value}
+                    />
                   )}
                 </ListItem>
               )}
@@ -309,7 +393,7 @@ const AccountSettings = ({ onClose }) => {
           <ListItem button onClick={openDeleteAccountDialog} sx={hoverEffect}>
             <ListItemText primary="Delete Account" />
           </ListItem>
-          <ListItem button onClick={""} sx={hoverEffect}>
+          <ListItem button onClick={handleLogOut} sx={hoverEffect}>
             <ListItemText primary="Logout" />
           </ListItem>
         </List>
@@ -318,36 +402,86 @@ const AccountSettings = ({ onClose }) => {
       {/* Change Password Dialog */}
       <Dialog open={openChangePassword} onClose={closeChangePasswordDialog}>
         <DialogTitle>Change Password</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Enter your new password and confirm it to update your account.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="New Password"
-            type="password"
-            fullWidth
-            variant="outlined"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            label="Confirm Password"
-            type="password"
-            fullWidth
-            variant="outlined"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={closeChangePasswordDialog}>Cancel</Button>
-          <Button onClick={handlePasswordChange}>Save</Button>
-        </DialogActions>
-      </Dialog>
+        <form onSubmit={handlePasswordChange}>
+          <DialogContent>
+            <DialogContentText>
+              Enter your current password, new password, and confirm it to
+              update your account.
+            </DialogContentText>
 
+            <TextField
+              autoFocus
+              margin="dense"
+              label="Current Password"
+              type={showOldPassword ? "text" : "password"} // Toggle type based on visibility state
+              fullWidth
+              variant="outlined"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              error={!!oldPasswordError}
+              helperText={oldPasswordError}
+              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleShowOldPassword}>
+                      {showOldPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <TextField
+              margin="dense"
+              label="New Password"
+              type={showNewPassword ? "text" : "password"}
+              fullWidth
+              variant="outlined"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              error={!!newPasswordError}
+              helperText={newPasswordError}
+              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleShowNewPassword }>
+                      {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            <TextField
+              required
+              margin="dense"
+              label="Confirm Password"
+              type={showConfirmPassword ? "text" : "password"}
+              fullWidth
+              variant="outlined"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              error={!!confirmPasswordError}
+              helperText={confirmPasswordError}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleShowConfirmPassword  }>
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeChangePasswordDialog}>Cancel</Button>
+            <Button type="submit">Save</Button> {/* Submit form */}
+          </DialogActions>
+        </form>
+      </Dialog>
       {/* Delete Account Dialog */}
       <Dialog open={openDeleteAccount} onClose={closeDeleteAccountDialog}>
         <DialogTitle>Delete Account</DialogTitle>

@@ -5,11 +5,11 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const MenuBox = ({ open, anchorEl, handleClose }) => {
-    const navigate = useNavigate();
-    const handleLogOut = () => {
+  const navigate = useNavigate();
+  const handleLogOut = () => {
     sessionStorage.clear();
     navigate("/auth");
-    toast.success("Logout..")
+    toast.success("Logout..");
     handleClose();
   };
 
