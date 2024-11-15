@@ -6,8 +6,9 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import { IQCoinIcon } from "../../assets";
 
-import { Coin } from "../assets";
+
 
 const RewardCard = ({ title, leftText, coinValue }) => {
   const theme = useTheme();
