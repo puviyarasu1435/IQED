@@ -23,6 +23,9 @@ import UserLayout from "../Pages/Layout/UserLayout";
 import MatchLayout from "../Pages/Layout/MatchLayout";
 import { OnLoadLobby } from "../Pages/GamePage/MatchPage/MatchLobby";
 import QuizLayout from "../Pages/Layout/QuizLayout";
+import Quizloader from "../Pages/QuizPage/Quizloader";
+
+
 
 
 export const Routers = createBrowserRouter(
@@ -40,8 +43,9 @@ export const Routers = createBrowserRouter(
           <Route path="FeedBack" element={<FeedBackPage />} />
         </Route>
         <Route path="quiz" element={<Outlet />}>
-          <Route path=":id" element={<QuizLayout />}>
-            <Route index element={<QuizPage /> }   />
+        <Route path="load" element={<Quizloader />} />
+          <Route path=":sessionId" element={<QuizLayout />}>
+            <Route index element={<QuizPage />  }   />
             <Route path="result" element={<></>} />
           </Route>
         </Route>

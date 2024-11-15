@@ -7,9 +7,9 @@ const AuthLayout = () => {
   const location = useLocation();
   const UserId = sessionStorage.getItem("UserId");
   const { data, error, isLoading } = useGetUserByIdQuery(UserId);
-  useMemo(() => {
+  useEffect(() => {
     console.log("Auth",data)
-  }, [data]);
+  }, [location]);
   
   // <Navigate to="/auth" state={{ from: location }} replace />
 
