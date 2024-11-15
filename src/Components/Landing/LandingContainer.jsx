@@ -10,7 +10,11 @@ import {
   Button,
 } from "@mui/material";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { useCreateQuizSessionMutation } from "../../Redux/RTK/QuizAPI/QuizAPI";
+import { resetQuiz } from "../../Redux/Slice/QuizSlice/QuizSlice";
 
 const CustomListItem = ({ content }) => (
   <ListItem sx={{ display: "list-item" }} disablePadding>
@@ -28,7 +32,9 @@ const LandingContainer = () => {
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
   const [selectedAgeGroup, setSelectedAgeGroup] = useState(null);
-
+  const dispatch = useDispatch()
+  const [CreateQuizSession] = useCreateQuizSessionMutation();
+  const navigate = useNavigate();
   // Age-specific instructions
   const listItems = [
     "There are 30 multiple choice questions.",
@@ -36,7 +42,31 @@ const LandingContainer = () => {
     "The questions are of varying difficulty.",
     "All questions are worth the same points.",
   ];
-
+  const handleQuizCraetion = () => {
+      try {
+        dispatch(resetQuiz());
+        toast.promise(
+          CreateQuizSession({
+            categoryName: "Geography",
+            hostId: "6736b861b254c95e3de18308",
+          }).unwrap(),
+          {
+            loading: "Creating Session...",
+            success: (responce) => {
+              navigate(`/Quiz/${responce.sessionId}`);
+              return <b>session Created</b>;
+            },
+            error: (e) => {
+              console.log(e)
+              return e;
+            },
+          }
+        );
+      } catch (error) {
+        console.error("Failed to update quiz session:", error);
+        toast.error("sorry session not save");
+      }
+  };
   const ageGroups = [
     { label: "Children (6-12)", value: "children" },
     { label: "Adolescents (13-17)", value: "adolescents" },
@@ -106,10 +136,15 @@ const LandingContainer = () => {
         >
           Please select your age range to start the test
         </Typography>
-        <Box sx={{ display: "flex", justifyContent: "space-around", width: "100%",  }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-around",
+            width: "100%",
+          }}
+        >
           <Button
-            component={Link}
-            to={`/quiz/${selectedAgeGroup}`}
+            component={Button}
             variant="contained"
             sx={{
               fontWeight: "bold",
@@ -128,6 +163,7 @@ const LandingContainer = () => {
                 transition: "transform 0.3s ease-in-out",
               },
             }}
+            onClick={handleQuizCraetion}
           >
             6-12
           </Button>
@@ -153,7 +189,7 @@ const LandingContainer = () => {
               },
             }}
           >
-         13-17
+            13-17
           </Button>
           <Button
             component={Link}
@@ -177,7 +213,7 @@ const LandingContainer = () => {
               },
             }}
           >
-           18+
+            18+
           </Button>
         </Box>
       </Box>

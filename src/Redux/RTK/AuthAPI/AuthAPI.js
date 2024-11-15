@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const AuthApi = createApi({
   reducerPath: 'AuthApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080/Auth' }), 
+  tagTypes: ['User'], 
   endpoints: (builder) => ({
     signUp: builder.mutation({
       query: (data) => ({
@@ -52,25 +53,38 @@ export const AuthApi = createApi({
       }),
     }),
 
-    // New endpoint to get user by ID
     getUserById: builder.query({
       query: (userId) => ({
         url: `user/${userId}`,
         method: 'GET',
       }),
+      providesTags: ['User'],
     }),
+
     updateUserStats: builder.mutation({
       query: (data) => ({
-        url: 'updateUserStats',  // Endpoint on the server
+        url: 'updateUserStats',
         method: 'POST',
-        body: data,  // The data being sent, such as userId, streakIncrement, etc.
+        body: data,
       }),
+      invalidatesTags: ['User'],
     }),
+
     getUsersSortedByMaxStreakAndMinRank: builder.query({
       query: () => ({
-        url: 'sorted',  // The endpoint where sorted users are fetched from
+        url: 'sorted',
         method: 'GET',
       }),
+      providesTags: ['User'],
+    }),
+
+    updateUserProfile: builder.mutation({
+      query: (data) => ({
+        url: 'updateProfile',
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['User'],
     }),
   }),
 });
@@ -84,5 +98,6 @@ export const {
   useVerifyMobileOTPMutation,
   useGetUserByIdQuery,
   useUpdateUserStatsMutation,
-  useGetUsersSortedByMaxStreakAndMinRankQuery ,
+  useGetUsersSortedByMaxStreakAndMinRankQuery,
+  useUpdateUserProfileMutation, // Export the new mutation hook
 } = AuthApi;

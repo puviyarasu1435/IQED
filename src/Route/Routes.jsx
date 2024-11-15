@@ -24,7 +24,8 @@ import UserLayout from "../Pages/Layout/UserLayout";
 import MatchLayout from "../Pages/Layout/MatchLayout";
 import { OnLoadLobby } from "../Pages/GamePage/MatchPage/MatchLobby";
 import QuizLayout from "../Pages/Layout/QuizLayout";
-import Quizloader from "../Pages/QuizPage/Quizloader";
+import GQSuccessPage from "../Pages/QuizPage/GQResultPage";
+
 
 
 
@@ -34,7 +35,7 @@ export const Routers = createBrowserRouter(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<LandingPage />} />
       <Route path="auth" element={<AuthPage />} />
-      <Route path="Test" element={<Test />} />
+      <Route path="Result" element={<GQSuccessPage />} />
       <Route element={<AuthLayout />}>
         <Route element={<UserLayout />}>
           <Route path="explore" element={<ExplorePage />} />
@@ -45,7 +46,6 @@ export const Routers = createBrowserRouter(
           <Route path="FeedBack" element={<FeedBackPage />} />
         </Route>
         <Route path="quiz" element={<Outlet />}>
-        <Route path="load" element={<Quizloader />} />
           <Route path=":sessionId" element={<QuizLayout />}>
             <Route index element={<QuizPage />  }   />
             <Route path="result" element={<></>} />

@@ -5,8 +5,8 @@ const UserSlice = createSlice({
   name: 'UserState',
   initialState: {
     _id: null,
-    profileImage:"",
-    UserName:"",
+    profileImage: "",
+    UserName: "",
     Name: "",
     Email: "",
     Age: "",
@@ -20,19 +20,23 @@ const UserSlice = createSlice({
     XP: 0,
   },
   reducers: {
+    // You can add local reducers if needed
     UpdateUser: (state, action) => {
       Object.assign(state, action.payload);
     },
   },
   extraReducers: (builder) => {
+    // Automatically update slice when getUserById query is fulfilled
     builder.addMatcher(
-      AuthApi.endpoints.signIn.matchFulfilled,
+      AuthApi.endpoints.getUserById.matchFulfilled,
       (state, action) => {
         Object.assign(state, action.payload);
       }
     );
+
+    // Automatically update slice when signIn mutation is fulfilled
     builder.addMatcher(
-      AuthApi.endpoints.getUserById.matchFulfilled,
+      AuthApi.endpoints.signIn.matchFulfilled,
       (state, action) => {
         Object.assign(state, action.payload);
       }

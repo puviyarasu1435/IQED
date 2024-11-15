@@ -22,6 +22,7 @@ const RootLayout = () => {
       "/gq-get-result-vai-wa": YellowBackgroundSVG,
       "/commenquiztest": YellowBackgroundSVG,
       "/match": YellowBackgroundSVG,
+      "/result": YellowBackgroundSVG,
     };
     console.log(location.pathname.toLowerCase());
     return backgroundMap[location.pathname.toLowerCase()] || WhiteBackgroundSVG;

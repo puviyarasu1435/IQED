@@ -20,6 +20,7 @@
     "@reduxjs/toolkit": "^2.2.7",
     "animejs": "^3.2.2",
     "chart.js": "^4.4.6",
+    "chartjs": "^0.3.24",
     "flowbite-react": "^0.10.1",
     "formik": "^2.4.6",
     "gsap": "^3.12.5",
