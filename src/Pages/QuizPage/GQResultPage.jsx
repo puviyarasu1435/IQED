@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Box,
   Typography,
@@ -19,7 +19,9 @@ import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import { withStyles } from "@mui/styles";
 import { useLocation } from "react-router-dom";
 import { LandingHeader } from "../../Components";
-
+import { useSelector } from "react-redux";
+import { PDFDocument, rgb } from "pdf-lib";
+import Chart from "chart.js/auto";
 const CssTextField = withStyles({
   root: {
     "& label": {
@@ -30,15 +32,15 @@ const CssTextField = withStyles({
       color: "#02216F",
       fontWeight: "bold",
     },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "#02216F",
-    },
     "& .MuiOutlinedInput-root": {
       "& fieldset": {
         borderColor: "#02216F",
       },
+      "&:hover fieldset": {
+        borderColor: "#1A49BA",
+      },
       "&.Mui-focused fieldset": {
-        borderColor: "#02216F",
+        borderColor: "#1A49BA",
       },
     },
   },
@@ -46,10 +48,15 @@ const CssTextField = withStyles({
 
 const GQSuccessPage = () => {
   const location = useLocation();
+  const QuizState = useSelector((state) => state.QuizState);
   // const { Score, totalTimeTaken } = location.state;
   const [selectedMethod, setSelectedMethod] = useState(null);
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
+  const canvasRef = useRef(null);
+  const [name, setName] = useState("");
+  const [contact, setContact] = useState("");
+  const [error, setError] = useState(false);
 
   const textFieldStyles = {
     borderRadius: 2,
@@ -59,13 +66,115 @@ const GQSuccessPage = () => {
     boxShadow: "2px 3px #02216F",
   };
 
-  // Update URL and manage state when selectedMethod changes
+ 
   useEffect(() => {
     const hash = selectedMethod === "email" ? "#GetViaEmail" : selectedMethod === "whatsapp" ? "#GetViaWhatsApp" : "";
     window.history.replaceState(null, "", `${window.location.pathname}${hash}`);
   }, [selectedMethod]);
 
-  // Listen for hash changes and update selectedMethod accordingly
+  const generateChart = () => {
+    return new Promise((resolve) => {
+      const ctx = canvasRef.current.getContext("2d");
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: [-3, -2, -1, 0, 1, 2, 3],
+          datasets: [
+            {
+              label: "IQ Distribution",
+              data: [1, 5, 15, 50, 15, 5, 1],
+              fill: true,
+              backgroundColor: "rgba(0, 119, 204, 0.3)",
+              borderColor: "rgba(0, 119, 204, 1)",
+              pointRadius: 0,
+            },
+            {
+              label: "User IQ",
+              data: Array(7).fill(null).map((_, i) => (i === 5 ? 110 : null)), // Replace 110 with actual score
+              pointRadius: 5,
+              pointBackgroundColor: "red",
+            },
+          ],
+        },
+        options: {
+          responsive: false,
+          scales: {
+            x: { display: false },
+            y: { display: false },
+          },
+        },
+      });
+      setTimeout(resolve, 100); // wait for chart to be drawn
+    });
+  };
+  
+  const generatePdf = async (name, score) => {
+    await generateChart(); // Generate chart first
+
+    const chartImage = canvasRef.current.toDataURL("image/png");
+    const pdfDoc = await PDFDocument.create();
+    const page = pdfDoc.addPage([600, 400]);
+    const { height } = page.getSize();
+
+    page.drawText("IQ Test Result", { x: 50, y: height - 50, size: 20, color: rgb(0, 0, 0) });
+    page.drawText(`Name: ${name}`, { x: 50, y: height - 100, size: 15, color: rgb(0, 0, 0) });
+    page.drawText(`IQ Score: ${score}`, { x: 50, y: height - 130, size: 15, color: rgb(0, 0, 0) });
+
+    const imageBytes = await fetch(chartImage).then(res => res.arrayBuffer());
+    const chartImageEmbed = await pdfDoc.embedPng(imageBytes);
+    page.drawImage(chartImageEmbed, {
+      x: 50,
+      y: height - 300,
+      width: 500,
+      height: 200,
+    });
+
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${name}_IQ_Test_Result.pdf`;
+    link.click();
+  };
+
+  
+
+  const validateContact = (value) => {
+    if (value.includes("@")) {
+      // Basic email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(value);
+    } else {
+      // WhatsApp number validation (basic check for numeric input)
+      return /^[0-9]{10,15}$/.test(value);
+    }
+  };
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+     
+      handleSendClick();
+    }
+  };
+
+  const handleSendClick = () => {
+    if (!name.trim() || !validateContact(contact)) {
+      setError(true);
+    } else {
+      setError(false);
+      generatePdf(name, QuizState.score); 
+    }
+  };
+
+
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyPress);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, []);
+
   useEffect(() => {
     const handleHashChange = () => {
       if (window.location.hash === "#GetViaEmail") {
@@ -117,6 +226,11 @@ const GQSuccessPage = () => {
         id="name-field"
         label="Name"
         variant="outlined"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        error={error && !name.trim()}
+        // helperText={error && !name.trim() ? "Name is required" : ""}
+        required
         InputProps={{
           sx: textFieldStyles,
         }}
@@ -124,7 +238,15 @@ const GQSuccessPage = () => {
       <CssTextField
         id="contact-field"
         label={selectedMethod === "email" ? "Email" : "WhatsApp No"}
-        variant="outlined"
+        value={contact}
+        onChange={(e) => setContact(e.target.value)}
+        error={error && !validateContact(contact)}
+        // helperText={
+        //   error && !validateContact(contact)
+        //     ? "Enter a valid email or WhatsApp number"
+        //     : ""
+        // }
+        required
         InputProps={{
           sx: { ...textFieldStyles, height: "6vh" },
         }}
@@ -132,6 +254,8 @@ const GQSuccessPage = () => {
       <Button
         fullWidth
         variant="contained"
+        required
+        onClick={handleSendClick}
         sx={{
           fontWeight: "bold",
           backgroundColor: "#1A49BA",
@@ -340,6 +464,7 @@ const GQSuccessPage = () => {
           </Box>
         )}
       </Box>
+      <canvas ref={canvasRef} style={{ display: "none" }} /> 
     </Box>
   );
 };

@@ -28,6 +28,9 @@ import {
   useUpdateUserStatsMutation,
 } from "../../Redux/RTK/AuthAPI/AuthAPI";
 
+
+
+
 const QuizPage = () => {
   const { sessionId } = useParams();
   const {
@@ -48,12 +51,14 @@ const QuizPage = () => {
   const pauseTimerRef = useRef(null);
   const resetTimerRef = useRef(null);
   const getTimeRef = useRef(null);
-
+ 
   if (error) {
     toast.error("session Expire");
     navigate("/missions");
     return <></>;
   }
+
+ 
 
   useEffect(() => {
     if (!isLoading) startTimerRef.current();
@@ -69,6 +74,7 @@ const QuizPage = () => {
 
   const handleQuit = (test = false) => {
     setResultDialog(false);
+    document.exitFullscreen();
     if (test) {
       toast.success("Quiz Completed");
     } else {
@@ -111,6 +117,7 @@ const QuizPage = () => {
       console.error("Failed to update quiz session:", error);
       toast.error("sorry session not save");
     }
+    document.exitFullscreen();
   };
 
   const progressValue =

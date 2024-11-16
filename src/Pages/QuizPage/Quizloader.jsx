@@ -8,7 +8,18 @@ import { useNavigate } from "react-router-dom";
 import {LetsGo, one, two, three, countdownSound, letsGoSound  } from "../../assets";
 import gsap from "gsap";
 const Quizloader = () => {
-
+  const enterFullscreen = () => {
+    const elem = document.documentElement; 
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.mozRequestFullScreen) { // Firefox
+      elem.mozRequestFullScreen();
+    } else if (elem.webkitRequestFullscreen) { // Chrome, Safari
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { // IE/Edge
+      elem.msRequestFullscreen();
+    }
+  };
 
   // Start countdown from 3
   const [countdown, setCountdown] = useState(3);
@@ -18,6 +29,10 @@ const Quizloader = () => {
   const dispatch = useDispatch();
 
   const countdownRef = useRef(null);
+
+  useEffect(() => {
+    enterFullscreen();
+  }, []);
   useEffect(() => {
     const playSound = (num) => {
       let audio;

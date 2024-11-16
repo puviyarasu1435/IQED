@@ -18,7 +18,6 @@ import {
   ProfilePage,
   LeaderboardPage,
   FeedBackPage,
-  Test,
   Quizloader,
 } from "../Pages";
 import UserLayout from "../Pages/Layout/UserLayout";
@@ -26,6 +25,7 @@ import MatchLayout from "../Pages/Layout/MatchLayout";
 import { OnLoadLobby } from "../Pages/GamePage/MatchPage/MatchLobby";
 import QuizLayout from "../Pages/Layout/QuizLayout";
 import GQSuccessPage from "../Pages/QuizPage/GQResultPage";
+import PDFGenerator from "../Components/Landing/PDFGenerator";
 
 export const Routers = createBrowserRouter(
   createRoutesFromElements(
@@ -54,6 +54,7 @@ export const Routers = createBrowserRouter(
         <Route index element={<MatchLobby />} loader={OnLoadLobby} />
         <Route path=":code" />
       </Route>
+      <Route path="PDFGenerator" element={<PDFGenerator />} />
     </Route>
   )
 );
