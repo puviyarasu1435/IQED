@@ -92,7 +92,7 @@ const Quizloader = () => {
       dispatch(resetQuiz());
       toast.promise(
         CreateQuizSession({
-          categoryName: "Geography",
+          categoryName: "IQTest",
           hostId: "6736b861b254c95e3de18308",
         }).unwrap(),
         {

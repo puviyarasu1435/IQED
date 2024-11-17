@@ -21,11 +21,25 @@ export const QuizApi = createApi({
         body: { hostId, score, answeredQuestions, status },
       }),
     }),
+    uploadFile: builder.mutation({
+      query: ({ file, email }) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('email', email);
+
+        return {
+          url: '/upload',
+          method: 'POST',
+          body: formData,
+        };
+      },
+    }),
   }),
 });
 
 export const {
   useCreateQuizSessionMutation,
   useGetQuizSessionByIdQuery, 
-useUpdateQuizSessionMutation// Hook to fetch quiz session by ID
+useUpdateQuizSessionMutation,// Hook to fetch quiz session by ID
+useUploadFileMutation
 } = QuizApi;
