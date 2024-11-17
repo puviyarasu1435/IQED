@@ -54,6 +54,7 @@ const QuizSlice = createSlice({
         0
       );
       state.isLive = false;
+      
     },
   },
   extraReducers: (builder) => {
