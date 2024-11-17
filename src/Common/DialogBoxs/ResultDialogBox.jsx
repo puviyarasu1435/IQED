@@ -36,7 +36,8 @@ const ResultDialogBox = ({
     return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
 
-
+  console.log("result :",QuizState.time);
+  
   const cardData = [
     { title: "Answered", leftText:QuizState.score, coinValue:QuizState.score*2 },
     { title: "Time Taken", leftText: formatTime(QuizState.time), coinValue: (((QuizState?.questionsList.length*60)-QuizState.time)*1)},
