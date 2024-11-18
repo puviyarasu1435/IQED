@@ -5,74 +5,97 @@ import { useDispatch } from "react-redux";
 import { useCreateQuizSessionMutation } from "../../Redux/RTK/QuizAPI/QuizAPI";
 import { resetQuiz } from "../../Redux/Slice/QuizSlice/QuizSlice";
 import { useNavigate } from "react-router-dom";
-import {LetsGo, one, two, three, countdownSound, letsGoSound  } from "../../assets";
+import { LetsGo, one, two, three, countdownSound, letsGoSound } from "../../assets";
 import gsap from "gsap";
+const audiosound = new Audio(countdownSound);
 const Quizloader = () => {
   const enterFullscreen = () => {
-    const elem = document.documentElement; 
+    const elem = document.documentElement;
     if (elem.requestFullscreen) {
       elem.requestFullscreen();
-    } else if (elem.mozRequestFullScreen) { // Firefox
+    } else if (elem.mozRequestFullScreen) {
       elem.mozRequestFullScreen();
-    } else if (elem.webkitRequestFullscreen) { // Chrome, Safari
+    } else if (elem.webkitRequestFullscreen) {
       elem.webkitRequestFullscreen();
-    } else if (elem.msRequestFullscreen) { // IE/Edge
+    } else if (elem.msRequestFullscreen) {
       elem.msRequestFullscreen();
     }
   };
 
-  // Start countdown from 3
+  // Countdown state
   const [countdown, setCountdown] = useState(3);
-  const [showQuizPage, setShowQuizPage] = useState(false);
-  const [CreateQuizSession] = useCreateQuizSessionMutation();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const countdownRef = useRef(null);
-
+  const [CreateQuizSession] = useCreateQuizSessionMutation();
+  
   useEffect(() => {
     enterFullscreen();
   }, []);
-  useEffect(() => {
-    const playSound = (num) => {
-      let audio;
-      if (num > 0) {
-        audio = new Audio(countdownSound);
-      } else if (num === 0) {
-        audio = new Audio(letsGoSound);
-      }
-      
-      if (audio) {
-        audio.volume = 0.5; // Set volume to 50%
-        audio.play();
-      }
-    };
 
-    if (countdown >= 0) {
-      playSound(countdown);
+  const playSound = (num) => {
+ 
+    // if (num > 0) {
+    //   audio = new Audio(countdownSound);
+    // } else if (num === 0) {
+    //   audio = new Audio(letsGoSound);
+    // }
 
-      // GSAP animation for countdown effect
-      if (countdownRef.current) {
-        gsap.fromTo(
-          countdownRef.current,
-          { scale: 0, opacity: 0 },  // start at 0 scale and opacity
-          { scale: 1, opacity: 1, duration: 0.5, ease: "elastic.out(1, 0.3)" } // animate to full scale and opacity
-        );
-      }
-
-      // Delay before showing the next countdown number
-      const timer = setTimeout(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1300);
-   
-      return () => clearTimeout(timer);
-    } else {
-      setShowQuizPage(true);
+    if (audiosound) {
+      audiosound.volume = 0.5;
+      audiosound.play();
     }
+  };
+
+  const handleQuizCreation = async () => {
+    try {
+      dispatch(resetQuiz());
+      toast.promise(
+        CreateQuizSession({
+          categoryName: "IQTEST",
+          hostId: "6736b861b254c95e3de18308",
+        }).unwrap(),
+        {
+          loading: "Creating Session...",
+          success: (response) => {
+            navigate(`/quiz/${response.sessionId}`, { replace: true });
+            return <b>Session Created</b>;
+          },
+          error: (e) => {
+            console.error(e);
+            return "Failed to create session.";
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Failed to create quiz session:", error);
+      toast.error("Sorry, session not saved.");
+    }
+  };
+
+  useEffect(() => {
+    if (countdown < 0) {
+      handleQuizCreation();
+      return;
+    }
+
+    playSound(countdown);
+
+    if (countdownRef.current) {
+      gsap.fromTo(
+        countdownRef.current,
+        { scale: 0, opacity: 0 }, // start
+        { scale: 1, opacity: 1, duration: 0.5, ease: "elastic.out(1, 0.3)" } // end
+      );
+    }
+
+    const timer = setTimeout(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
   }, [countdown]);
 
- 
-  // Function to get the illustrated number based on countdown
   const getIllustratedNumber = (num) => {
     switch (num) {
       case 3:
@@ -82,44 +105,11 @@ const Quizloader = () => {
       case 1:
         return <img ref={countdownRef} src={one} alt="1" />;
       case 0:
-        return <img ref={countdownRef} src={LetsGo} alt="Lets Go" />;
+        return <img ref={countdownRef} src={LetsGo} alt="Let's Go" />;
       default:
         return null;
     }
   };
- const handleQuizCraetion = () => {
-    try {
-      dispatch(resetQuiz());
-      toast.promise(
-        CreateQuizSession({
-          categoryName: "IQTest",
-          hostId: "6736b861b254c95e3de18308",
-        }).unwrap(),
-        {
-          loading: "Creating Session...",
-          success: (responce) => {
-            navigate(`/quiz/${responce.sessionId}`,{ replace: true });
-            return <b>session Created</b>;
-          },
-          error: (e) => {
-            console.log(e)
-            return e;
-          },
-        }
-      );
-    } catch (error) {
-      console.error("Failed to update quiz session:", error);
-      toast.error("sorry session not save");
-    }
-};
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (countdown === 0) {
-        handleQuizCraetion();
-      }
-    }, 1000);
-    
-  }, [countdown]);
 
   return (
     <Box
@@ -140,7 +130,6 @@ const Quizloader = () => {
         }}
       >
         {getIllustratedNumber(countdown)}
-       
       </Box>
     </Box>
   );

@@ -57,11 +57,12 @@ const QuestionBox = ({ index, Question }) => {
           {Question.type === "text-image" && (
             <Box
               component="img"
-              src={RabbitIMG}
+              src={Question.questionImage}
               sx={{
                 width:"250px",
                 height: "auto",
                 maxWidth: "100%",
+                mb:'4%'
               }}
               alt="Rabbit"
             />

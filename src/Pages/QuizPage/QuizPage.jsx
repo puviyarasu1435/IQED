@@ -1,147 +1,55 @@
+import { useParams } from "react-router-dom";
+
+// mui
 import { Box, Button } from "@mui/material";
-import React, { useMemo, useRef, useState } from "react";
 import { KeyboardDoubleArrowRight } from "@mui/icons-material";
 import { ResultDialogBox, Timer } from "../../Common";
-import { useDispatch, useSelector } from "react-redux";
+
+// hook
+import { useHandleQuizPage } from "../util";
+
 import {
-  answerQuestion,
-  nextQuestion,
-  prevQuestion,
-  setQuestions,
-  setTimer,
-  submitQuiz,
-} from "../../Redux/Slice/QuizSlice/QuizSlice";
-import {
+  LoadingScreen,
   QuestionBox,
   QuestionDrawerList,
   QuizProgressBar,
 } from "../../Components";
-import {
-  useGetQuizSessionByIdQuery,
-  useUpdateQuizSessionMutation,
-} from "../../Redux/RTK/QuizAPI/QuizAPI";
-import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import toast from "react-hot-toast";
-import {
-  useGetUserByIdQuery,
-  useUpdateUserStatsMutation,
-} from "../../Redux/RTK/AuthAPI/AuthAPI";
-
-
-
 
 const QuizPage = () => {
   const { sessionId } = useParams();
   const {
-    data: sessionData,
-    error,
-    isLoading,
-  } = useGetQuizSessionByIdQuery(sessionId);
-  const [updateQuizSession] = useUpdateQuizSessionMutation();
-  const [updateUserStats, { data }] = useUpdateUserStatsMutation();
+    quizState,
+    sessionLoading,
+    ResultDialog,
+    isQuestionList,
+    progressValue,
+    timerRef,
+    setisQuestionList,
+    setResultDialog,
+    handleOnPrevious,
+    handleOnNext,
+    handleQuit,
+    handleSubmit,
+  } = useHandleQuizPage(sessionId);
 
-  const UserData = useSelector((state) => state.UserState);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const QuizState = useSelector((state) => state.QuizState);
-  const [isQuestionList, setisQuestionList] = useState(false);
-  const [ResultDialog, setResultDialog] = useState(false);
-  const startTimerRef = useRef(null);
-  const pauseTimerRef = useRef(null);
-  const resetTimerRef = useRef(null);
-  const getTimeRef = useRef(null);
- 
-  if (error) {
-    toast.error("session Expire");
-    navigate("/missions");
-    return <></>;
+  if (sessionLoading) {
+    return <LoadingScreen />;
   }
 
- 
 
-  useEffect(() => {
-    if (!isLoading) startTimerRef.current();
-  }, [isLoading]);
-
-  const handleOnPrevious = () => {
-    dispatch(prevQuestion());
-  };
-
-  const handleOnNext = () => {
-    dispatch(nextQuestion());
-  };
-
-  const handleQuit = (test = false) => {
-    setResultDialog(false);
-    document.exitFullscreen();
-    if (test) {
-      toast.success("Quiz Completed");
-    } else {
-      toast.error("Session Expire");
-    }
-    navigate("/missions");
-  };
-
-  const handleSubmit = async () => {
-    dispatch(submitQuiz());
-    if (!sessionStorage.getItem("UserId")) {
-      navigate("/result", { replace: true });
-      return false
-    }else{
-      
-      setResultDialog(true);
-      pauseTimerRef.current();
-      dispatch(setTimer(getTimeRef.current()));
-      updateUserStats({
-        userId: sessionData?.host,
-        streakIncrement: 0,
-        xpToAdd:
-          (QuizState?.questionsList.length * 60 - QuizState.time) * 1 +
-          QuizState.score * 2,
-        rankToUpdate: Math.floor(UserData.XP / 10000),
-        iQGemsToAdd: 1,
-      });
-      dispatch(UpdateUser(data.user));
-    }
-    try {
-      await updateQuizSession({
-        sessionId,
-        hostId: sessionData?.host, // Use the host ID from session data
-        score: QuizState.score,
-        answeredQuestions: QuizState.answeredQuestions,
-        status: "completed",
-      }).unwrap();
-      toast.success("session Complated");
-    } catch (error) {
-      console.error("Failed to update quiz session:", error);
-      toast.error("sorry session not save");
-    }
-    document.exitFullscreen();
-  };
-
-  const progressValue =
-    ((QuizState?.currentQuestionIndex + 1) / QuizState?.questionsList.length) *
-    100;
-
-  if (isLoading) {
-    return <></>;
-  }
 
   return (
     <Box sx={{ height: "100%" }}>
       <Timer
-        initialTime={QuizState?.questionsList.length * 60}
-        onTimeUp={() => handleSubmit()}
-        startTimerProp={(startFn) => (startTimerRef.current = startFn)}
-        pauseTimerProp={(pauseFn) => (pauseTimerRef.current = pauseFn)}
-        resetTimerProp={(resetFn) => (resetTimerRef.current = resetFn)}
-        getTimeProp={(getTime) => (getTimeRef.current = getTime)}
+        ref={timerRef}
+        initialTime={quizState?.questionsList.length * 60}
+        start={!sessionLoading}
       />
       <QuestionDrawerList
         open={isQuestionList}
         handleClose={() => setisQuestionList(false)}
-        quizData={QuizState?.questionsList}
+        quizData={quizState?.questionsList}
         handleSubmit={handleSubmit}
         handleQuit={() => handleQuit()}
       />
@@ -161,13 +69,13 @@ const QuizPage = () => {
         <KeyboardDoubleArrowRight />
       </Button>
       <QuestionBox
-        index={QuizState?.currentQuestionIndex}
-        Question={QuizState?.questionsList[QuizState?.currentQuestionIndex]}
+        index={quizState?.currentQuestionIndex}
+        Question={quizState?.questionsList[quizState?.currentQuestionIndex]}
       />
       <QuizProgressBar
-        currentQuestion={QuizState?.currentQuestionIndex + 1}
-        totalQuestions={QuizState?.questionsList.length}
-        progressValue={progressValue} // Using dynamically calculated progress value
+        currentQuestion={quizState?.currentQuestionIndex + 1}
+        totalQuestions={quizState?.questionsList.length}
+        progressValue={progressValue}
         onPrevious={handleOnPrevious}
         onNext={handleOnNext}
       />
@@ -181,7 +89,3 @@ const QuizPage = () => {
 };
 
 export default QuizPage;
-
-export const QuizPageloder = () => {
-  return true;
-};

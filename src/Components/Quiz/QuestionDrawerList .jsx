@@ -45,8 +45,9 @@ export default function QuestionDrawerList({
         role="presentation"
         onClick={handleClose}
       >
-        <Box sx={{ p: 2, fontWeight: "bold" }}>
-          <Typography>dsff</Typography>
+        <Box sx={{ p: 2, display:'flex',justifyContent:'space-between',alignItems:'center' }}>
+          <Typography fontWeight={800}>IQ TEST</Typography>
+          <Button onClick={handleClose}>close</Button>
         </Box>
         <Divider />
         <Box
@@ -90,12 +91,11 @@ export default function QuestionDrawerList({
             ))}
             
           </List>
-        </Box>
-        <Box
+          <Box
           sx={{
             display: "flex",
             flexDirection: "column",
-            p: 2,
+            p:1,
           }}
           gap={2}
         >
@@ -107,15 +107,17 @@ export default function QuestionDrawerList({
           >
             Submit
           </Button>
-          <Button
+          {/* <Button
             variant="outlined"
             color="error"
             onClick={handleQuit}
             sx={{ width: "100%" }}
           >
             Leave
-          </Button>
+          </Button> */}
         </Box>
+        </Box>
+
       </Box>
     ),
     [

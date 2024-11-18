@@ -21,6 +21,13 @@ export const QuizApi = createApi({
         body: { hostId, score, answeredQuestions, status },
       }),
     }),
+        updateQuizSession: builder.mutation({
+      query: ({ sessionId, hostId, score, answeredQuestions, status }) => ({
+        url: `/quiz-session/${sessionId}`,
+        method: "PUT",
+        body: { hostId, score, answeredQuestions, status },
+      }),
+    }),
     uploadFile: builder.mutation({
       query: ({ file, email }) => {
         const formData = new FormData();

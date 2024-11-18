@@ -24,6 +24,8 @@ import { PDFDocument, rgb } from "pdf-lib";
 import Chart from "chart.js/auto";
 import { useUploadFileMutation } from "../../Redux/RTK/QuizAPI/QuizAPI";
 
+
+
 const CssTextField = withStyles({
   root: {
     "& label": {
@@ -52,7 +54,6 @@ const GQSuccessPage = () => {
   const location = useLocation();
   const QuizState = useSelector((state) => state.QuizState);
   // const { Score, totalTimeTaken } = location.state;
-  const [UploadFileMutation] = useUploadFileMutation();
   const [selectedMethod, setSelectedMethod] = useState(null);
   const theme = useTheme();
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
@@ -60,7 +61,7 @@ const GQSuccessPage = () => {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
   const [error, setError] = useState(false);
-
+  const [UploadFileMutation] = useUploadFileMutation();
   const textFieldStyles = {
     borderRadius: 2,
     bgcolor: "#fff",
@@ -133,17 +134,15 @@ const GQSuccessPage = () => {
     });
 
     const pdfBytes = await pdfDoc.save();
-    console.log(contact)
-    await UploadFileMutation({
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+      await UploadFileMutation({
       file: new Blob([pdfBytes], { type: "application/pdf" }),
       email: contact, // Pass the email value
     });
-    const blob = new Blob([pdfBytes], { type: "application/pdf" });
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
     link.download = `${name}_IQ_Test_Result.pdf`;
     link.click();
-
   };
 
   
@@ -407,7 +406,7 @@ const GQSuccessPage = () => {
               >
                 Email
               </Button>
-              <Button
+              {/* <Button
                 startIcon={<WhatsAppIcon />}
                 fullWidth
                 variant="contained"
@@ -430,7 +429,7 @@ const GQSuccessPage = () => {
                 }}
               >
                 WhatsApp
-              </Button>
+              </Button> */}
             </Stack>
             {/* <Typography
               sx={{
