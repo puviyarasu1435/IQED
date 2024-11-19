@@ -28,7 +28,7 @@ const OptionButton = ({ quiz, type = "text", content }) => {
     <Box
       component={"button"}
       sx={{
-        height: { xs: "5rem", lg: "6rem", md: "5rem" },
+        height: { xs: "5rem", lg: "7rem", md: "6rem" },
         width: "100%",
         display: "flex",
         backgroundColor:!isLive ? backgroundColor: isAnswered?"#FFDA55":"#02216F" ,
@@ -37,6 +37,7 @@ const OptionButton = ({ quiz, type = "text", content }) => {
         justifyContent: "center",
         alignItems: "center",
         border: 'none',
+      
         boxShadow: isAnswered ? "2px 3px #0b276b" : null,
         "&:hover": {
           transition: "transform 0.3s ease-in-out",
@@ -55,7 +56,7 @@ const OptionButton = ({ quiz, type = "text", content }) => {
       {type === "text" ? (
         <Typography fontWeight={700} fontSize={20}>{content}</Typography>
       ) : (
-        <img src={content} width={100} height={100} alt="Option" />
+        <img src={content} width={110} height={100} alt="Option" />
       )}
     </Box>
   );

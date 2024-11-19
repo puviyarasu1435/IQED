@@ -29,15 +29,11 @@ export const QuizApi = createApi({
       }),
     }),
     uploadFile: builder.mutation({
-      query: ({ file, email }) => {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('email', email);
-
+      query: (data) => {
         return {
           url: '/upload',
           method: 'POST',
-          body: formData,
+          body: data,
         };
       },
     }),

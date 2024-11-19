@@ -11,19 +11,21 @@ import {
   useTheme,
 } from "@mui/material";
 import ConfettiEffect from "./ConfettiEffec";
-import { popGIF } from "../../assets";
-import { Link } from "react-router-dom";
+import {  popGIF, Poppins_Bold } from "../../assets";
+
+import { Link, useNavigate } from "react-router-dom";
 import EmailIcon from "@mui/icons-material/Email";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import { withStyles } from "@mui/styles";
 import { useLocation } from "react-router-dom";
-import { LandingHeader } from "../../Components";
+import { BellCurveChart, LandingHeader } from "../../Components";
 import { useSelector } from "react-redux";
 import { PDFDocument, rgb } from "pdf-lib";
-import Chart from "chart.js/auto";
+import {IQTestResultTem1 } from "../../assets/PDF";
+import * as fontkit from "fontkit";
 import { useUploadFileMutation } from "../../Redux/RTK/QuizAPI/QuizAPI";
-
+import toast from "react-hot-toast";
 
 
 const CssTextField = withStyles({
@@ -59,9 +61,37 @@ const GQSuccessPage = () => {
   const isSm = useMediaQuery(theme.breakpoints.down("sm"));
   const canvasRef = useRef(null);
   const [name, setName] = useState("");
+  const [iqscore, setiqscore] = useState(0);
   const [contact, setContact] = useState("");
   const [error, setError] = useState(false);
+  const [imageData, setImageData] = useState(null);
   const [UploadFileMutation] = useUploadFileMutation();
+  const navigater = useNavigate();
+  const calculateIQ = (userScore) => {     
+    // Predefined scores array (you could replace this with a dynamic set of scores)
+    const scores = [30, 28, 32, 34, 31, 29, 27, 33, 35, 26];        
+     // Add the user score to the predefined scores arrayconst 
+     const  updatedScores = [...scores, userScore];     
+     // Calculate the mean and standard deviationconst 
+     const  mean = updatedScores.reduce((sum, score) => sum + score, 0) / updatedScores.length;     
+     const standardDeviation = Math.sqrt(       updatedScores.reduce((sum, score) => sum + Math.pow(score - mean, 2), 0) / (updatedScores.length - 1)     );     
+     // Calculate Z-score and then IQ (IQ = Z-score * 15 + 100)
+     const zScore = (userScore - mean) / standardDeviation;     
+     const calculatedIQ = (zScore * 15) + 100; 
+     return calculatedIQ.toFixed(2); 
+     };
+
+  const IQScre =calculateIQ(QuizState.score); 
+  if(iqscore==0){
+    setiqscore(IQScre)
+  }
+  console.log("QuizState.Score:", QuizState.Score);
+  const handleChartRendered = (data) => {
+    setImageData(data); // Store the image data
+    console.log("imageData:", imageData);
+  };
+ 
+  
   const textFieldStyles = {
     borderRadius: 2,
     bgcolor: "#fff",
@@ -70,82 +100,124 @@ const GQSuccessPage = () => {
     boxShadow: "2px 3px #02216F",
   };
 
- 
   useEffect(() => {
-    const hash = selectedMethod === "email" ? "#GetViaEmail" : selectedMethod === "whatsapp" ? "#GetViaWhatsApp" : "";
+    const hash =
+      selectedMethod === "email"
+        ? "#GetViaEmail"
+        : selectedMethod === "whatsapp"
+        ? "#GetViaWhatsApp"
+        : "";
     window.history.replaceState(null, "", `${window.location.pathname}${hash}`);
   }, [selectedMethod]);
 
-  const generateChart = () => {
-    return new Promise((resolve) => {
-      const ctx = canvasRef.current.getContext("2d");
-      new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: [-3, -2, -1, 0, 1, 2, 3],
-          datasets: [
-            {
-              label: "IQ Distribution",
-              data: [1, 5, 15, 50, 15, 5, 1],
-              fill: true,
-              backgroundColor: "rgba(0, 119, 204, 0.3)",
-              borderColor: "rgba(0, 119, 204, 1)",
-              pointRadius: 0,
-            },
-            {
-              label: "User IQ",
-              data: Array(7).fill(null).map((_, i) => (i === 5 ? 110 : null)), // Replace 110 with actual score
-              pointRadius: 5,
-              pointBackgroundColor: "red",
-            },
-          ],
-        },
-        options: {
-          responsive: false,
-          scales: {
-            x: { display: false },
-            y: { display: false },
-          },
-        },
-      });
-      setTimeout(resolve, 100); // wait for chart to be drawn
-    });
-  };
-  
+  //  await generateChart();
+  //     const chartImage = canvasRef.current.toDataURL("image/png");
   const generatePdf = async (name, score) => {
-    await generateChart(); // Generate chart first
+    if (!imageData) {
+      console.error("Image data is not available");
+      return;
+    }
 
-    const chartImage = canvasRef.current.toDataURL("image/png");
-    const pdfDoc = await PDFDocument.create();
-    const page = pdfDoc.addPage([600, 400]);
-    const { height } = page.getSize();
+    // Check if imageData is a valid DataURL
+    // if (!imageData.startsWith("data:image/png;base64,")) {
+    //   console.error("Invalid image data format:", imageData);
+    //   return;
+    // }
 
-    page.drawText("IQ Test Result", { x: 50, y: height - 50, size: 20, color: rgb(0, 0, 0) });
-    page.drawText(`Name: ${name}`, { x: 50, y: height - 100, size: 15, color: rgb(0, 0, 0) });
-    page.drawText(`IQ Score: ${score}`, { x: 50, y: height - 130, size: 15, color: rgb(0, 0, 0) });
+    // const fontBytes = await fetch(Poppins_Bold).then((res) =>
+    //   res.arrayBuffer()
+    // );
+    // const existingPdfBytes = await fetch(IQTestResultTem1).then((res) =>
+    //   res.arrayBuffer()
+    // );
+    // const pdfDoc = await PDFDocument.load(existingPdfBytes);
+    // pdfDoc.registerFontkit(fontkit);
+    // const customFont = await pdfDoc.embedFont(fontBytes);
 
-    const imageBytes = await fetch(chartImage).then(res => res.arrayBuffer());
-    const chartImageEmbed = await pdfDoc.embedPng(imageBytes);
-    page.drawImage(chartImageEmbed, {
-      x: 50,
-      y: height - 300,
-      width: 500,
-      height: 200,
+    // const page = pdfDoc.getPages()[0];
+    // const { width, height } = page.getSize();
+    // const fontSize = 24;
+    // const text = `Hello, ${name}!`;
+    // const textWidth = customFont.widthOfTextAtSize(text, fontSize);
+    // const x = (width - textWidth) / 2;
+    // const y = 510;
+    // page.drawText(text, {
+    //   x,
+    //   y,
+    //   size: fontSize,
+    //   color: rgb(1, 0.76, 0),
+    //   font: customFont,
+    // });
+
+    // const iqScoreText = `Your IQ Score is ${score}`;
+    // const iqScoreTextWidth = customFont.widthOfTextAtSize(iqScoreText, fontSize);
+    // const iqScoreTextX = (width - iqScoreTextWidth) / 2;
+    // const iqScoreTextY = y - fontSize - 10; // Adjust to position below the name
+    // page.drawText(iqScoreText, {
+    //   x: iqScoreTextX,
+    //   y: iqScoreTextY,
+    //   size: fontSize,
+    //   color: rgb(1, 1, 1),
+    //   font: customFont,
+    // });
+
+
+    // const chartImageBytes = await fetch(imageData).then((res) =>
+    //   res.arrayBuffer()
+    // );
+    // console.log("chartImageBytes:", chartImageBytes);
+
+    // // const chartImageBytes = await fetch(imageData).then((res) => res.blob());
+    // const chartImageData = await pdfDoc.embedPng(chartImageBytes);
+    // const chartWidth = 500;
+    // const chartHeight = 280;
+
+    // const chartX = (width - chartWidth) / 2;
+    // const chartY = ((height - chartHeight) / 2)-130;
+
+    // page.drawImage(chartImageData, {
+    //   x: chartX,
+    //   y: chartY,
+    //   width: chartWidth,
+    //   height: chartHeight,
+    // });
+
+    // ------------------------------------------------------
+
+    // const chartBlob = new Blob([chartImageBytes], { type: "image/png" });
+    // const chartUrl = URL.createObjectURL(chartBlob);
+
+    // // Create an anchor element to trigger download
+    // const downloadLink = document.createElement("a");
+    // downloadLink.href = chartUrl;
+    // downloadLink.download = "chart.png";
+
+    // // Programmatically trigger the download
+    // downloadLink.click();
+
+    // // Optionally, revoke the object URL after the download to free up memory
+    // URL.revokeObjectURL(chartUrl);
+
+    // --------------------------------------------------------
+
+    // const pdfBytes = await pdfDoc.save();
+    // const blob = new Blob([pdfBytes], { type: "application/pdf" });
+    // console.log("chart is writed",blob);
+
+    toast.promise(UploadFileMutation({
+      file: imageData,
+      email: contact,
+      name:name,
+      score:iqscore  // Pass the email value
+    }), {
+      loading: "Send...",
+      success: () => {
+        navigater("/")
+        return <b>Check Your Email..</b>;
+      },
+      error: <b>Could not Add Try again.</b>,
     });
-
-    const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: "application/pdf" });
-      await UploadFileMutation({
-      file: new Blob([pdfBytes], { type: "application/pdf" }),
-      email: contact, // Pass the email value
-    });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `${name}_IQ_Test_Result.pdf`;
-    link.click();
   };
-
-  
 
   const validateContact = (value) => {
     if (value.includes("@")) {
@@ -159,7 +231,6 @@ const GQSuccessPage = () => {
   };
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
-     
       handleSendClick();
     }
   };
@@ -169,11 +240,10 @@ const GQSuccessPage = () => {
       setError(true);
     } else {
       setError(false);
-      generatePdf(name, QuizState.score); 
+      // generatePdf(name, QuizState.score);
+      generatePdf(name, IQScre);
     }
   };
-
-
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyPress);
@@ -256,7 +326,7 @@ const GQSuccessPage = () => {
         // }
         required
         InputProps={{
-          sx: { ...textFieldStyles, height: "6vh" },
+          sx: { ...textFieldStyles },
         }}
       />
       <Button
@@ -380,6 +450,8 @@ const GQSuccessPage = () => {
               spacing={2}
               sx={{
                 width: { md: "50%" },
+                display:'flex',
+                justifyContent:"center"
               }}
             >
               <Button
@@ -394,6 +466,7 @@ const GQSuccessPage = () => {
                   boxShadow: "2px 3px #fff",
                   borderRadius: { xs: "5px", md: "8px" },
                   textTransform: "none",
+                  width:'30%',
                   border: "1px solid #fff",
                   "&:hover": {
                     color: "#ffff",
@@ -431,48 +504,51 @@ const GQSuccessPage = () => {
                 WhatsApp
               </Button> */}
             </Stack>
+            <BellCurveChart
+              userIQ={IQScre}
+              onChartRendered={handleChartRendered}
+            />
             {/* <Typography
-              sx={{
-                textAlign: "center",
-                width: { md: "60%" },
-                color: "#02216F",
-                fontSize: "16px",
-                fontWeight: "400",
-                py: "20px",
-              }}
-            >
-              or directly on the platform
-            </Typography>
-            <Button
-              component={Link}
-              to="/Signup"
-              fullWidth
-              variant="contained"
-              sx={{
-                fontWeight: "bold",
-                backgroundColor: "#fff",
-                color: "#02216F",
-                boxShadow: "2px 3px #02216F",
-                borderRadius: { xs: "5px", sm: "5px", md: "8px", lg: "8px" },
-                width: "50%",
-                textTransform: "none",
-                border: "1px solid",
-                borderColor: "#02216F",
-                "&:hover": {
-                  color: "#fff",
-                  backgroundColor: "#02216F",
-                  transition: "transform 0.3s ease-in-out",
-                  transform: "translateY(-5px)",
+                sx={{
+                  textAlign: "center",
+                  width: { md: "60%" },
+                  color: "#02216F",
+                  fontSize: "16px",
+                  fontWeight: "400",
+                  py: "20px",
+                }}
+              >
+                or directly on the platform
+              </Typography>
+              <Button
+                component={Link}
+                to="/Signup"
+                fullWidth
+                variant="contained"
+                sx={{
+                  fontWeight: "bold",
+                  backgroundColor: "#fff",
+                  color: "#02216F",
                   boxShadow: "2px 3px #02216F",
-                },
-              }}
-            >
-              SignUp
-            </Button> */}
+                  borderRadius: { xs: "5px", sm: "5px", md: "8px", lg: "8px" },
+                  width: "50%",
+                  textTransform: "none",
+                  border: "1px solid",
+                  borderColor: "#02216F",
+                  "&:hover": {
+                    color: "#fff",
+                    backgroundColor: "#02216F",
+                    transition: "transform 0.3s ease-in-out",
+                    transform: "translateY(-5px)",
+                    boxShadow: "2px 3px #02216F",
+                  },
+                }}
+              >
+                SignUp
+              </Button> */}
           </Box>
         )}
       </Box>
-      <canvas ref={canvasRef} style={{ display: "none" }} /> 
     </Box>
   );
 };

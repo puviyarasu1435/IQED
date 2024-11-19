@@ -1,12 +1,29 @@
-import React from "react";
-import { Line } from "react-chartjs-2";
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from "chart.js";
-import annotationPlugin from 'chartjs-plugin-annotation';
+import React, { useEffect, useRef, useMemo } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  LineController,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import annotationPlugin from "chartjs-plugin-annotation";
 
-// Register Chart.js modules and the annotation plugin
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, annotationPlugin);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  LineController,
+  Title,
+  Tooltip,
+  Legend,
+  annotationPlugin
+);
 
-// Function to generate data points for a normal distribution (bell curve)
 const generateBellCurveData = (mean, stdDev, min, max, step = 1) => {
   const data = [];
   for (let x = min; x <= max; x += step) {
@@ -17,57 +34,65 @@ const generateBellCurveData = (mean, stdDev, min, max, step = 1) => {
   return data;
 };
 
-const BellCurveChart = ({ userIQ }) => {
-    const mean = 100;
-    const stdDev = 15;
-    const minIQ = 55;
-    const maxIQ = 145;
-  
-    // Generate data for the bell curve
-    const bellCurveData = generateBellCurveData(mean, stdDev, minIQ, maxIQ).map(
-      (point) => point.y * 100 // Scale y-values for visibility
-    );
-  
-    // Chart.js data and options
-    const data = {
+const BellCurveChart = React.memo(({ userIQ, onChartRendered }) => {
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null); // To store the Chart.js instance
+  const mean = 100;
+  const stdDev = 15;
+  const minIQ = 55;
+  const maxIQ = 145;
+
+  const bellCurveData = useMemo(
+    () => generateBellCurveData(mean, stdDev, minIQ, maxIQ).map((point) => point.y * 100),
+    [mean, stdDev, minIQ, maxIQ]
+  );
+
+  const data = useMemo(() => {
+    const chartData = {
       labels: Array.from({ length: maxIQ - minIQ + 1 }, (_, i) => i + minIQ),
       datasets: [
         {
           label: "IQ Distribution",
           data: bellCurveData,
           fill: true,
-          borderColor: "blue",
-          backgroundColor: "rgba(0, 0, 255, 0.2)",  // Same color as border
+          borderColor: "White",
+          backgroundColor: "white",
           tension: 0.4,
         },
         {
           label: "Your IQ",
           data: Array(maxIQ - minIQ + 1).fill(null),
-          pointRadius: 5,
-          pointBackgroundColor: "red",
-          borderColor: "red",
-          backgroundColor: "red",
+          pointRadius: 10,
+          pointBackgroundColor: "#ffc400 ",
+          borderColor: "#ffc400",
+          backgroundColor: "#ffc400",
           fill: false,
           tension: 0,
         },
       ],
     };
-  
-    // Add user's IQ point
+
     const userIndex = userIQ - minIQ;
     if (userIndex >= 0 && userIndex < bellCurveData.length) {
-      data.datasets[1].data[userIndex] = bellCurveData[userIndex];
+      chartData.datasets[1].data[userIndex] = bellCurveData[userIndex];
     }
-  
-    // Get the y-value of the bell curve at the user's IQ
+    return chartData;
+  }, [userIQ, bellCurveData, minIQ, maxIQ]);
+
+  const options = useMemo(() => {
+    const userIndex = userIQ - minIQ;
     const userYValue = bellCurveData[userIndex];
-  
-    // Chart options with annotations
-    const options = {
+
+    return {
       responsive: true,
+      animation: false,
       plugins: {
         legend: {
           position: "top",
+          labels: {
+            color: "white",
+            font: { size: 18, weight: "bold" },
+          },
         },
         tooltip: {
           callbacks: {
@@ -77,20 +102,19 @@ const BellCurveChart = ({ userIQ }) => {
         annotation: {
           annotations: {
             userIQLine: {
-              type: 'line',
+              type: "line",
               xMin: userIQ,
               xMax: userIQ,
               yMin: 0,
               yMax: userYValue,
-              borderColor: 'red',
+              borderColor: "#ffc400",
               borderWidth: 2,
               label: {
                 content: `Your IQ: ${userIQ}`,
                 enabled: true,
                 position: "top",
-                font: {
-                  size: 12,
-                },
+                color: "White",
+                font: { size: 18, weight: "bold" },
               },
             },
           },
@@ -102,21 +126,49 @@ const BellCurveChart = ({ userIQ }) => {
           title: {
             display: true,
             text: "IQ Score",
+            color: "White",
+            font: { size: 16, weight: "bold" },
           },
+          ticks: { color: "white" },
+          grid: { color: "white" },
         },
         y: {
           title: {
             display: true,
             text: "Probability (%)",
+            color: "White",
+            font: { size: 16, weight: "bold" },
           },
+          ticks: { color: "white" },
+          grid: { color: "white" },
         },
       },
     };
-  
-    return <Line data={data} options={options} />;
-  };
-  
-  
-  
+  }, [userIQ, bellCurveData, minIQ]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (chartRef.current) {
+      chartRef.current.destroy(); // Destroy existing chart before creating a new one
+    }
+    const ctx = canvas.getContext("2d");
+    chartRef.current = new ChartJS(ctx, {
+      type: "line",
+      data: data,
+      options: options,
+    });
+
+    if (onChartRendered) {
+      const imageData = canvas.toDataURL("image/png");
+      onChartRendered(imageData);
+    }
+
+    return () => {
+      chartRef.current?.destroy();
+    };
+  }, [data, options, onChartRendered]);
+
+  return <canvas ref={canvasRef} width={500} height={300} style={{ display: "none" }} />;
+});
 
 export default BellCurveChart;

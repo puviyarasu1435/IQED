@@ -11,7 +11,7 @@ function LandingHeader() {
             <Logo widthCus={{xs: '80px', sm: '80px', md: '150px', lg: '150px'}} />
           </Box>
           <Box sx={{ flexGrow: 0 }}>
-            <Button
+            {/* <Button
               component={Link}
               to="/Auth"
               fullWidth
@@ -37,7 +37,7 @@ function LandingHeader() {
               }}
             >
               Sign In
-            </Button>
+            </Button> */}
           </Box>
         </Toolbar>
       </Container>
